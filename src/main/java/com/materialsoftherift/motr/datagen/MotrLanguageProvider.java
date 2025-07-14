@@ -34,6 +34,8 @@ public class MotrLanguageProvider extends LanguageProvider {
         addSlabTranslations(MotrBlocks.REGISTERED_GLASS_SLABS);
         addSlabTranslations(MotrBlocks.REGISTERED_TRIMM_SLABS);
         addSlabTranslations(MotrBlocks.REGISTERED_DIRECTIONAL_SLABS);
+        addSlabTranslations(MotrBlocks.REGISTERED_SILKTOUCH_SLABS);
+        addSlabTranslations(MotrBlocks.REGISTERED_COPPER_SLABS);
 
         addButtonTranslations(MotrBlocks.REGISTERED_BUTTONS);
 

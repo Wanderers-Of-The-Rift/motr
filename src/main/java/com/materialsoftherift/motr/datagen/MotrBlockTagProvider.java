@@ -76,7 +76,8 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(getAllButtonBlocks())
                 .add(getAllFenceBlocks())
                 .add(getAllWallBlocks())
-                .add(getAllStairBlocks());
+                .add(getAllStairBlocks())
+                .add(getAllCopperBlocks());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(MotrBlocks.DIRT_SLAB.slab().get())
@@ -105,7 +106,8 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrBlocks.BLUE_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrBlocks.PURPLE_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrBlocks.MAGENTA_CONCRETE_POWDER_SLAB.slab().get())
-                .add(MotrBlocks.PINK_CONCRETE_POWDER_SLAB.slab().get());
+                .add(MotrBlocks.PINK_CONCRETE_POWDER_SLAB.slab().get())
+                .add(MotrBlocks.SNOW_SLAB.slab().get());
 
         tag(BlockTags.DIRT)
                 .add(MotrBlocks.DIRT_SLAB.slab().get())
@@ -148,6 +150,19 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
 
         tag(BlockTags.WOOL_CARPETS)
                 .add(MotrBlocks.HAY_CARPET.get());
+
+        tag(BlockTags.INFINIBURN_END)
+                .add(MotrBlocks.MAGMA_SLAB.slab().get());
+
+        tag(BlockTags.INFINIBURN_NETHER)
+                .add(MotrBlocks.MAGMA_SLAB.slab().get());
+
+        tag(BlockTags.INFINIBURN_OVERWORLD)
+                .add(MotrBlocks.MAGMA_SLAB.slab().get());
+
+        tag(BlockTags.SNOW)
+                .add(MotrBlocks.SNOW_SLAB.slab().get());
+
         // spotless:on
 
     }
@@ -157,7 +172,15 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 MotrBlocks.REGISTERED_STANDARD_SLABS.values().stream(),
                 MotrBlocks.REGISTERED_GLASS_SLABS.values().stream(),
                 MotrBlocks.REGISTERED_DIRECTIONAL_SLABS.values().stream(),
-                MotrBlocks.REGISTERED_TRIMM_SLABS.values().stream()
+                MotrBlocks.REGISTERED_TRIMM_SLABS.values().stream(),
+                MotrBlocks.REGISTERED_SILKTOUCH_SLABS.values().stream(),
+                MotrBlocks.REGISTERED_COPPER_SLABS.values().stream()
+        ).flatMap(stream -> stream).map(slabInfo -> slabInfo.slab().get()).toArray(Block[]::new);
+    }
+
+    private Block[] getAllCopperBlocks() {
+        return Stream.of(
+                MotrBlocks.REGISTERED_COPPER_SLABS.values().stream()
         ).flatMap(stream -> stream).map(slabInfo -> slabInfo.slab().get()).toArray(Block[]::new);
     }
 

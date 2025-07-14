@@ -59,6 +59,22 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
+        MotrBlocks.REGISTERED_SILKTOUCH_SLABS.forEach((id, slabInfo) -> {
+            ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
+                    .pattern("###")
+                    .define('#', slabInfo.getBaseItem())
+                    .unlockedBy("has_" + id, has(slabInfo.getBaseItem()))
+                    .save(this.output);
+        });
+
+        MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
+            ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
+                    .pattern("###")
+                    .define('#', slabInfo.getBaseItem())
+                    .unlockedBy("has_" + id, has(slabInfo.getBaseItem()))
+                    .save(this.output);
+        });
+
         MotrBlocks.REGISTERED_STANDARD_WALLS.forEach((id, wallInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, wallInfo.wall().get(), 6)
                     .pattern("###")

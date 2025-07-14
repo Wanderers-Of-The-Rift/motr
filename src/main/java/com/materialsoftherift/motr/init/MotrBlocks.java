@@ -1,10 +1,14 @@
 package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
@@ -14,6 +18,7 @@ import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -23,17 +28,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class MotrBlocks {
-
-    public static class IceSlabBlock extends SlabBlock {
-        public IceSlabBlock(Properties properties) {
-            super(properties);
-        }
-
-        @Override
-        public float getFriction() {
-            return 0.98f;
-        }
-    }
 
     public static class SlabInfo {
         private final DeferredBlock<SlabBlock> slab;
@@ -312,6 +306,9 @@ public class MotrBlocks {
     public static final SlabInfo GOLD_BLOCK_SLAB = registerSlabBlock("gold_block_slab", Blocks.GOLD_BLOCK);
     public static final SlabInfo IRON_BLOCK_SLAB = registerSlabBlock("iron_block_slab", Blocks.IRON_BLOCK);
 
+    public static final SlabInfo MAGMA_SLAB = registerSlabBlock("magma_slab", Blocks.MAGMA_BLOCK);
+    public static final SlabInfo SNOW_SLAB = registerSlabBlock("snow_slab", Blocks.SNOW_BLOCK);
+
     public static final Map<String, SlabInfo> REGISTERED_STANDARD_SLABS = Map.ofEntries(
             Map.entry("white_concrete", WHITE_CONCRETE_SLAB),
             Map.entry("light_gray_concrete", LIGHT_GRAY_CONCRETE_SLAB), Map.entry("gray_concrete", GRAY_CONCRETE_SLAB),
@@ -350,7 +347,13 @@ public class MotrBlocks {
             Map.entry("moss_block", MOSS_BLOCK_SLAB), Map.entry("ice", ICE_SLAB),
             Map.entry("gilded_blackstone", GILDED_BLACKSTONE_SLAB), Map.entry("dirt", DIRT_SLAB),
             Map.entry("clay", CLAY_SLAB), Map.entry("coarse_dirt", COARSE_DIRT_SLAB),
-            Map.entry("blue_ice", BLUE_ICE_SLAB), Map.entry("resin_block", RESIN_BLOCK_SLAB)
+            Map.entry("blue_ice", BLUE_ICE_SLAB), Map.entry("resin_block", RESIN_BLOCK_SLAB),
+            Map.entry("magma", MAGMA_SLAB)
+
+    );
+
+    public static final Map<String, SlabInfo> REGISTERED_SILKTOUCH_SLABS = Map.ofEntries(
+            Map.entry("snow", SNOW_SLAB)
     );
 
     public static final Map<String, SlabInfo> REGISTERED_GLASS_SLABS = Map.ofEntries(
@@ -886,6 +889,32 @@ public class MotrBlocks {
 
     );
 
+    public static final SlabInfo COPPER_SLAB = registerCopperSlabBlock("copper_slab", Blocks.COPPER_BLOCK);
+    public static final SlabInfo EXPOSED_COPPER_SLAB = registerCopperSlabBlock("exposed_copper_slab",
+            Blocks.EXPOSED_COPPER);
+    public static final SlabInfo WEATHERED_COPPER_SLAB = registerCopperSlabBlock("weathered_copper_slab",
+            Blocks.WEATHERED_COPPER);
+    public static final SlabInfo OXIDIZED_COPPER_SLAB = registerCopperSlabBlock("oxidized_copper_slab",
+            Blocks.OXIDIZED_COPPER);
+
+    public static final SlabInfo WAXED_COPPER_SLAB = registerCopperSlabBlock("waxed_copper_slab",
+            Blocks.WAXED_COPPER_BLOCK);
+    public static final SlabInfo WAXED_EXPOSED_COPPER_SLAB = registerCopperSlabBlock("waxed_exposed_copper_slab",
+            Blocks.WAXED_EXPOSED_COPPER);
+    public static final SlabInfo WAXED_WEATHERED_COPPER_SLAB = registerCopperSlabBlock("waxed_weathered_copper_slab",
+            Blocks.WAXED_WEATHERED_COPPER);
+    public static final SlabInfo WAXED_OXIDIZED_COPPER_SLAB = registerCopperSlabBlock("waxed_oxidized_copper_slab",
+            Blocks.WAXED_OXIDIZED_COPPER);
+
+    public static final Map<String, SlabInfo> REGISTERED_COPPER_SLABS = Map.ofEntries(
+            Map.entry("copper_block", COPPER_SLAB), Map.entry("exposed_copper", EXPOSED_COPPER_SLAB),
+            Map.entry("weathered_copper", WEATHERED_COPPER_SLAB), Map.entry("oxidized_copper", OXIDIZED_COPPER_SLAB),
+            Map.entry("waxed_copper_block", WAXED_COPPER_SLAB),
+            Map.entry("waxed_exposed_copper", WAXED_EXPOSED_COPPER_SLAB),
+            Map.entry("waxed_weathered_copper", WAXED_WEATHERED_COPPER_SLAB),
+            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB)
+    );
+
     public static final DeferredBlock<CarpetBlock> HAY_CARPET = registerCarpet("hay_carpet", Blocks.HAY_BLOCK);
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String key, Supplier<T> sup) {
@@ -905,11 +934,16 @@ public class MotrBlocks {
             BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
 
             if (baseBlock == Blocks.ICE || baseBlock == Blocks.PACKED_ICE || baseBlock == Blocks.BLUE_ICE) {
-                return new MotrBlocks.IceSlabBlock(properties.friction(0.98f));
+                return new IceSlabBlock(properties.friction(0.98f));
+            }
+
+            if (baseBlock == Blocks.MAGMA_BLOCK) {
+                return new MagmaSlabBlock(properties);
             }
 
             return new SlabBlock(properties);
         });
+
         return new SlabInfo(slab, baseBlock);
     }
 
@@ -948,6 +982,57 @@ public class MotrBlocks {
         return registerDevBlock(id, () -> new CarpetBlock(
                 BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id))
         ));
+    }
+
+    private static SlabInfo registerCopperSlabBlock(String id, Block baseBlock) {
+        DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
+            BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
+
+            return new CopperSlabBlock(properties);
+        });
+
+        return new SlabInfo(slab, baseBlock);
+    }
+
+    public static class MagmaSlabBlock extends SlabBlock {
+
+        public MagmaSlabBlock(Properties properties) {
+            super(properties.lightLevel(state -> 3));
+        }
+
+        @Override
+        public void stepOn(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.Entity entity) {
+            if (entity instanceof LivingEntity living) {
+                boolean inWater = level.getFluidState(pos.above()).is(net.minecraft.tags.FluidTags.WATER);
+
+                if (!living.isCrouching() && !living.hasEffect(MobEffects.FIRE_RESISTANCE)
+                        && (level.getBlockState(pos.above()).isAir() || inWater)) {
+                    living.hurt(level.damageSources().hotFloor(), 1.0F);
+                }
+            }
+
+            super.stepOn(level, pos, state, entity);
+        }
+//needs bubble colums
+    }
+
+    public static class IceSlabBlock extends SlabBlock {
+        public IceSlabBlock(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public float getFriction() {
+            return 0.98f;
+        }
+    }
+
+    public static class CopperSlabBlock extends SlabBlock {
+        public CopperSlabBlock(BlockBehaviour.Properties properties) {
+            super(properties);
+        }
+
+        // need to add oxifying and such
     }
 
     private static ResourceKey<Block> blockId(String name) {

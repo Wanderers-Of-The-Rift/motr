@@ -22,7 +22,16 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class MotrModelProvider extends ModelProvider {
+
+    private static final Map<String, String> COPPER_TEXTURE_OVERRIDES = Map.ofEntries(
+            Map.entry("waxed_copper_block", "copper_block"), Map.entry("waxed_exposed_copper", "exposed_copper"),
+            Map.entry("waxed_weathered_copper", "weathered_copper"),
+            Map.entry("waxed_oxidized_copper", "oxidized_copper")
+    );
+
     public MotrModelProvider(PackOutput output) {
         super(output, MaterialsOfTheRift.MODID);
     }
@@ -39,6 +48,15 @@ public class MotrModelProvider extends ModelProvider {
         });
 
         MotrBlocks.REGISTERED_GLASS_SLABS.forEach((textureId, slabInfo) -> {
+            registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
+        });
+
+        MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
+            String textureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
+            registerTrimmSlabModel(blockModels, slabInfo.slab().get(), textureName, textureName, textureName);
+        });
+
+        MotrBlocks.REGISTERED_SILKTOUCH_SLABS.forEach((textureId, slabInfo) -> {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
