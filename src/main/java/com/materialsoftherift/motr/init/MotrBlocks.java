@@ -5,9 +5,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -17,14 +27,17 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class MotrBlocks {
@@ -915,6 +928,14 @@ public class MotrBlocks {
             Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB)
     );
 
+    // Used only for getting a second recipe for waxed versions.
+    public static final Map<String, SlabInfo> REGISTERED_WAXED_COPPER_SLABS = Map.ofEntries(
+            Map.entry("waxed_copper_block", WAXED_COPPER_SLAB),
+            Map.entry("waxed_exposed_copper", WAXED_EXPOSED_COPPER_SLAB),
+            Map.entry("waxed_weathered_copper", WAXED_WEATHERED_COPPER_SLAB),
+            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB)
+    );
+
     public static final DeferredBlock<CarpetBlock> HAY_CARPET = registerCarpet("hay_carpet", Blocks.HAY_BLOCK);
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String key, Supplier<T> sup) {
@@ -988,7 +1009,9 @@ public class MotrBlocks {
         DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
             BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
 
-            return new CopperSlabBlock(properties);
+            WeatheringCopper.WeatherState weatherState = getWeatherStateFromBlock(baseBlock);
+
+            return new CopperSlabBlock(weatherState, properties);
         });
 
         return new SlabInfo(slab, baseBlock);
@@ -1027,12 +1050,133 @@ public class MotrBlocks {
         }
     }
 
-    public static class CopperSlabBlock extends SlabBlock {
-        public CopperSlabBlock(BlockBehaviour.Properties properties) {
+    public static class CopperSlabBlock extends SlabBlock implements WeatheringCopper {
+        private final WeatheringCopper.WeatherState weatherState;
+
+        public CopperSlabBlock(WeatheringCopper.WeatherState weatherState, BlockBehaviour.Properties properties) {
             super(properties);
+            this.weatherState = weatherState;
         }
 
-        // need to add oxifying and such
+        @Override
+        public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            this.changeOverTime(state, level, pos, random);
+        }
+
+        @Override
+        public boolean isRandomlyTicking(BlockState state) {
+            return WeatheringCopper.getNext(state.getBlock()).isPresent();
+        }
+
+        @Override
+        public WeatherState getAge() {
+            return this.weatherState;
+        }
+
+        @Override
+        public Optional<BlockState> getNext(BlockState state) {
+            return WeatheringCopper.getNext(state.getBlock()).map(block -> block.withPropertiesOf(state));
+        }
+
+        @Override
+        protected InteractionResult useItemOn(
+                ItemStack stack,
+                BlockState state,
+                Level level,
+                BlockPos pos,
+                Player player,
+                InteractionHand hand,
+                BlockHitResult hitResult) {
+            if (stack.is(Items.HONEYCOMB)) {
+                Optional<BlockState> waxed = getWaxedVersion(state);
+                if (waxed.isPresent()) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, waxed.get(), 11);
+                        if (!player.getAbilities().instabuild) {
+                            stack.shrink(1);
+                        }
+                        level.playSound(null, pos, SoundEvents.HONEYCOMB_WAX_ON, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    } else {
+                        level.levelEvent(3003, pos, 0);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
+            if (stack.getItem() instanceof AxeItem) {
+                Optional<BlockState> dewaxed = getDewaxedVersion(state);
+                if (dewaxed.isPresent()) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, dewaxed.get(), 11);
+                        level.playSound(null, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
+                    } else {
+                        level.levelEvent(3004, pos, 0);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+
+                Optional<BlockState> scraped = WeatheringCopper.getPrevious(state.getBlock())
+                        .map(block -> block.withPropertiesOf(state));
+                if (scraped.isPresent()) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, scraped.get(), 11);
+                        level.playSound(null, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
+                    } else {
+                        level.levelEvent(3005, pos, 0);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
+            return InteractionResult.PASS;
+        }
+
+        private Optional<BlockState> getWaxedVersion(BlockState state) {
+            Block block = state.getBlock();
+
+            if (block == COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == EXPOSED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_EXPOSED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WEATHERED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_WEATHERED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == OXIDIZED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_OXIDIZED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            }
+
+            return Optional.empty();
+        }
+
+        private Optional<BlockState> getDewaxedVersion(BlockState state) {
+            Block block = state.getBlock();
+
+            if (block == WAXED_COPPER_SLAB.slab().get()) {
+                return Optional.of(COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_EXPOSED_COPPER_SLAB.slab().get()) {
+                return Optional.of(EXPOSED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_WEATHERED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WEATHERED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_OXIDIZED_COPPER_SLAB.slab().get()) {
+                return Optional.of(OXIDIZED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            }
+
+            return Optional.empty();
+        }
+    }
+
+    private static WeatheringCopper.WeatherState getWeatherStateFromBlock(Block baseBlock) {
+        if (baseBlock == Blocks.COPPER_BLOCK || baseBlock == Blocks.WAXED_COPPER_BLOCK) {
+            return WeatheringCopper.WeatherState.UNAFFECTED;
+        } else if (baseBlock == Blocks.EXPOSED_COPPER || baseBlock == Blocks.WAXED_EXPOSED_COPPER) {
+            return WeatheringCopper.WeatherState.EXPOSED;
+        } else if (baseBlock == Blocks.WEATHERED_COPPER || baseBlock == Blocks.WAXED_WEATHERED_COPPER) {
+            return WeatheringCopper.WeatherState.WEATHERED;
+        } else if (baseBlock == Blocks.OXIDIZED_COPPER || baseBlock == Blocks.WAXED_OXIDIZED_COPPER) {
+            return WeatheringCopper.WeatherState.OXIDIZED;
+        }
+        return WeatheringCopper.WeatherState.UNAFFECTED;
     }
 
     private static ResourceKey<Block> blockId(String name) {

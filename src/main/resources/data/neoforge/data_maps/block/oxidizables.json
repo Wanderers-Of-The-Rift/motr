@@ -1,0 +1,13 @@
+{
+  "values": {
+    "motr:copper_slab": {
+      "next_oxidation_stage": "motr:exposed_copper_slab"
+    },
+    "motr:exposed_copper_slab": {
+      "next_oxidation_stage": "motr:weathered_copper_slab"
+    },
+    "motr:weathered_copper_slab": {
+      "next_oxidation_stage": "motr:oxidized_copper_slab"
+    }
+  }
+}

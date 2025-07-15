@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -129,6 +130,20 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .define('#', stairInfo.getBaseItem())
                     .unlockedBy("has_" + id, has(stairInfo.getBaseItem()))
                     .save(this.output);
+        });
+
+        MotrBlocks.REGISTERED_WAXED_COPPER_SLABS.forEach((id, waxedSlabInfo) -> {
+            String nonWaxedId = id.replace("waxed_", "");
+            MotrBlocks.SlabInfo nonWaxedSlabInfo = MotrBlocks.REGISTERED_COPPER_SLABS.get(nonWaxedId);
+
+            if (nonWaxedSlabInfo != null) {
+                ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.BUILDING_BLOCKS, waxedSlabInfo.slab().get())
+                        .requires(nonWaxedSlabInfo.slab().get())
+                        .requires(Items.HONEYCOMB)
+                        .unlockedBy("has_" + nonWaxedId, has(nonWaxedSlabInfo.slab().get()))
+                        .unlockedBy("has_honeycomb", has(Items.HONEYCOMB))
+                        .save(this.output, id + "_from_honeycomb");
+            }
         });
 
         ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, MotrBlocks.HAY_CARPET.get(), 4)
