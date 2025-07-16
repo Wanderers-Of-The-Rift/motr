@@ -57,26 +57,20 @@ public class MotrModelProvider extends ModelProvider {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
-        // Muuta model providerissa copper slabs -looppia:
-
         MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
             if (id.contains("bulb")) {
-                // Special handling for all copper bulb variants with state-based textures
-                // KÄYTÄ COPPER_TEXTURE_OVERRIDES MAPPEJA MYÖS BULBEILLE!
                 String baseTextureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
 
                 System.out.println("Bulb texture mapping: " + id + " -> " + baseTextureName);
 
                 registerCopperBulbSlabModel(blockModels, slabInfo.slab().get(), baseTextureName);
 
-                // Item model generaatio
                 ResourceLocation itemModel = MaterialsOfTheRift
                         .id("block/" + getBlockName(slabInfo.slab().get()) + "_unlit");
                 itemModels.itemModelOutput.accept(
                         slabInfo.slab().get().asItem(), ItemModelUtils.plainModel(itemModel)
                 );
             } else {
-                // Regular copper slabs
                 String textureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
                 registerTrimmSlabModel(blockModels, slabInfo.slab().get(), textureName, textureName, textureName);
             }
@@ -137,7 +131,6 @@ public class MotrModelProvider extends ModelProvider {
 
             registerGlassWallModel(blockModels, wall, textureName);
 
-            // Create translucent wall inventory model
             ResourceLocation itemModel = ExtendedModelTemplateBuilder.builder()
                     .parent(ResourceLocation.withDefaultNamespace("block/wall_inventory"))
                     .suffix("_inventory")
@@ -413,15 +406,12 @@ public class MotrModelProvider extends ModelProvider {
         );
     }
 
-// Muuta model providerissa registerCopperBulbSlabModel-metodia:
-
     private void registerCopperBulbSlabModel(BlockModelGenerators blockModels, Block slab, String baseTextureName) {
 
         System.out.println("=== DEBUG: Registering copper bulb slab model ===");
         System.out.println("Block: " + getBlockName(slab));
         System.out.println("Base texture: " + baseTextureName);
 
-        // Hae LIT ja POWERED propertyt suoraan block instanssista
         BooleanProperty litProperty = null;
         BooleanProperty poweredProperty = null;
 
@@ -438,7 +428,6 @@ public class MotrModelProvider extends ModelProvider {
             }
         }
 
-        // Jos propertyjä ei löydy, käytä standardeja
         if (litProperty == null) {
             litProperty = BlockStateProperties.LIT;
             System.out.println("Using fallback LIT property");
@@ -448,7 +437,6 @@ public class MotrModelProvider extends ModelProvider {
             System.out.println("Using fallback POWERED property");
         }
 
-        // Create texture mappings for each state
         TextureMapping unlitMapping = new TextureMapping()
                 .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + baseTextureName))
                 .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + baseTextureName))
@@ -479,19 +467,16 @@ public class MotrModelProvider extends ModelProvider {
         System.out.println("  Lit: " + baseTextureName + "_lit");
         System.out.println("  Lit+Powered: " + baseTextureName + "_lit_powered");
 
-        // Create models for each state and slab type
         createCopperBulbSlabModels(blockModels, slab, unlitMapping, "_unlit");
         createCopperBulbSlabModels(blockModels, slab, unpoweredMapping, "_unpowered");
         createCopperBulbSlabModels(blockModels, slab, litMapping, "_lit");
         createCopperBulbSlabModels(blockModels, slab, litPoweredMapping, "_lit_powered");
 
-        // Create the blockstate with complex property dispatch using the found properties
         String blockName = getBlockName(slab);
         System.out.println("Generating blockstate for: " + blockName);
 
         blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(slab)
                 .with(PropertyDispatch.properties(BlockStateProperties.SLAB_TYPE, litProperty, poweredProperty)
-                        // ... (rest of the selects remain the same)
                         .select(SlabType.BOTTOM, false, false, Variant.variant()
                                 .with(VariantProperties.MODEL, MaterialsOfTheRift.id("block/" + blockName + "_unlit")))
                         .select(SlabType.TOP, false, false,
