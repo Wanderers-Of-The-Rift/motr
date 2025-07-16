@@ -30,7 +30,10 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -348,10 +351,6 @@ public class MotrBlocks {
             Map.entry("purple_concrete_powder", PURPLE_CONCRETE_POWDER_SLAB),
             Map.entry("magenta_concrete_powder", MAGENTA_CONCRETE_POWDER_SLAB),
             Map.entry("pink_concrete_powder", PINK_CONCRETE_POWDER_SLAB),
-            Map.entry("tube_coral_block", TUBE_CORAL_BLOCK_SLAB),
-            Map.entry("brain_coral_block", BRAIN_CORAL_BLOCK_SLAB),
-            Map.entry("bubble_coral_block", BUBBLE_CORAL_BLOCK_SLAB),
-            Map.entry("fire_coral_block", FIRE_CORAL_BLOCK_SLAB), Map.entry("horn_coral_block", HORN_CORAL_BLOCK_SLAB),
             Map.entry("warped_wart_block", WARPED_WART_BLOCK_SLAB), Map.entry("soul_sand", SOUL_SAND_SLAB),
             Map.entry("soul_soil", SOUL_SOIL_SLAB), Map.entry("rooted_dirt", ROOTED_DIRT_SLAB),
             Map.entry("raw_iron_block", RAW_IRON_BLOCK_SLAB), Map.entry("raw_gold_block", RAW_GOLD_BLOCK_SLAB),
@@ -366,7 +365,10 @@ public class MotrBlocks {
     );
 
     public static final Map<String, SlabInfo> REGISTERED_SILKTOUCH_SLABS = Map.ofEntries(
-            Map.entry("snow", SNOW_SLAB)
+            Map.entry("snow", SNOW_SLAB), Map.entry("tube_coral_block", TUBE_CORAL_BLOCK_SLAB),
+            Map.entry("brain_coral_block", BRAIN_CORAL_BLOCK_SLAB),
+            Map.entry("bubble_coral_block", BUBBLE_CORAL_BLOCK_SLAB),
+            Map.entry("fire_coral_block", FIRE_CORAL_BLOCK_SLAB), Map.entry("horn_coral_block", HORN_CORAL_BLOCK_SLAB)
     );
 
     public static final Map<String, SlabInfo> REGISTERED_GLASS_SLABS = Map.ofEntries(
@@ -918,6 +920,21 @@ public class MotrBlocks {
             Blocks.WAXED_WEATHERED_COPPER);
     public static final SlabInfo WAXED_OXIDIZED_COPPER_SLAB = registerCopperSlabBlock("waxed_oxidized_copper_slab",
             Blocks.WAXED_OXIDIZED_COPPER);
+    public static final SlabInfo COPPER_BULB_SLAB = registerCopperSlabBlock("copper_bulb_slab", Blocks.COPPER_BULB);
+    public static final SlabInfo EXPOSED_COPPER_BULB_SLAB = registerCopperSlabBlock("exposed_copper_bulb_slab",
+            Blocks.EXPOSED_COPPER_BULB);
+    public static final SlabInfo WEATHERED_COPPER_BULB_SLAB = registerCopperSlabBlock("weathered_copper_bulb_slab",
+            Blocks.WEATHERED_COPPER_BULB);
+    public static final SlabInfo OXIDIZED_COPPER_BULB_SLAB = registerCopperSlabBlock("oxidized_copper_bulb_slab",
+            Blocks.OXIDIZED_COPPER_BULB);
+    public static final SlabInfo WAXED_COPPER_BULB_SLAB = registerCopperSlabBlock("waxed_copper_bulb_slab",
+            Blocks.WAXED_COPPER_BULB);
+    public static final SlabInfo WAXED_EXPOSED_COPPER_BULB_SLAB = registerCopperSlabBlock(
+            "waxed_exposed_copper_bulb_slab", Blocks.WAXED_EXPOSED_COPPER_BULB);
+    public static final SlabInfo WAXED_WEATHERED_COPPER_BULB_SLAB = registerCopperSlabBlock(
+            "waxed_weathered_copper_bulb_slab", Blocks.WAXED_WEATHERED_COPPER_BULB);
+    public static final SlabInfo WAXED_OXIDIZED_COPPER_BULB_SLAB = registerCopperSlabBlock(
+            "waxed_oxidized_copper_bulb_slab", Blocks.WAXED_OXIDIZED_COPPER_BULB);
 
     public static final Map<String, SlabInfo> REGISTERED_COPPER_SLABS = Map.ofEntries(
             Map.entry("copper_block", COPPER_SLAB), Map.entry("exposed_copper", EXPOSED_COPPER_SLAB),
@@ -925,7 +942,14 @@ public class MotrBlocks {
             Map.entry("waxed_copper_block", WAXED_COPPER_SLAB),
             Map.entry("waxed_exposed_copper", WAXED_EXPOSED_COPPER_SLAB),
             Map.entry("waxed_weathered_copper", WAXED_WEATHERED_COPPER_SLAB),
-            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB)
+            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB), Map.entry("copper_bulb", COPPER_BULB_SLAB),
+            Map.entry("exposed_copper_bulb", EXPOSED_COPPER_BULB_SLAB),
+            Map.entry("weathered_copper_bulb", WEATHERED_COPPER_BULB_SLAB),
+            Map.entry("oxidized_copper_bulb", OXIDIZED_COPPER_BULB_SLAB),
+            Map.entry("waxed_copper_bulb", WAXED_COPPER_BULB_SLAB),
+            Map.entry("waxed_exposed_copper_bulb", WAXED_EXPOSED_COPPER_BULB_SLAB),
+            Map.entry("waxed_weathered_copper_bulb", WAXED_WEATHERED_COPPER_BULB_SLAB),
+            Map.entry("waxed_oxidized_copper_bulb", WAXED_OXIDIZED_COPPER_BULB_SLAB)
     );
 
     // Used only for getting a second recipe for waxed versions.
@@ -933,7 +957,11 @@ public class MotrBlocks {
             Map.entry("waxed_copper_block", WAXED_COPPER_SLAB),
             Map.entry("waxed_exposed_copper", WAXED_EXPOSED_COPPER_SLAB),
             Map.entry("waxed_weathered_copper", WAXED_WEATHERED_COPPER_SLAB),
-            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB)
+            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB),
+            Map.entry("waxed_copper_bulb", WAXED_COPPER_BULB_SLAB),
+            Map.entry("waxed_exposed_copper_bulb", WAXED_EXPOSED_COPPER_BULB_SLAB),
+            Map.entry("waxed_weathered_copper_bulb", WAXED_WEATHERED_COPPER_BULB_SLAB),
+            Map.entry("waxed_oxidized_copper_bulb", WAXED_OXIDIZED_COPPER_BULB_SLAB)
     );
 
     public static final DeferredBlock<CarpetBlock> HAY_CARPET = registerCarpet("hay_carpet", Blocks.HAY_BLOCK);
@@ -1008,13 +1036,62 @@ public class MotrBlocks {
     private static SlabInfo registerCopperSlabBlock(String id, Block baseBlock) {
         DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
             BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
-
             WeatheringCopper.WeatherState weatherState = getWeatherStateFromBlock(baseBlock);
+
+            if (id.contains("bulb")) {
+                return new CopperBulbSlabBlock(weatherState,
+                        properties.lightLevel(state -> state.getValue(CopperBulbSlabBlock.LIT) ? 15 : 0));
+            }
 
             return new CopperSlabBlock(weatherState, properties);
         });
 
         return new SlabInfo(slab, baseBlock);
+    }
+
+    public static class CopperBulbSlabBlock extends CopperSlabBlock {
+        public static final BooleanProperty LIT = BlockStateProperties.LIT;
+        public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+
+        public CopperBulbSlabBlock(WeatherState state, Properties properties) {
+            super(state, properties);
+            this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(POWERED, false));
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add(LIT, POWERED);
+        }
+
+        @Override
+        public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+            super.onPlace(state, level, pos, oldState, movedByPiston);
+            if (!level.isClientSide) {
+                checkRedstoneSignal(state, level, pos);
+            }
+        }
+
+        @Override
+        public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            if (!level.isClientSide) {
+                checkRedstoneSignal(state, level, pos);
+            }
+        }
+
+        private void checkRedstoneSignal(BlockState state, Level level, BlockPos pos) {
+            boolean receivingPower = level.hasNeighborSignal(pos);
+            boolean wasPowered = state.getValue(POWERED);
+
+            if (receivingPower && !wasPowered) {
+                boolean currentlyLit = state.getValue(LIT);
+                level.setBlock(pos, state.setValue(LIT, !currentlyLit).setValue(POWERED, true), 3);
+            } else if (!receivingPower && wasPowered) {
+                level.setBlock(pos, state.setValue(POWERED, false), 3);
+            }
+
+            level.scheduleTick(pos, this, 1);
+        }
     }
 
     public static class MagmaSlabBlock extends SlabBlock {
@@ -1146,6 +1223,16 @@ public class MotrBlocks {
                 return Optional.of(WAXED_OXIDIZED_COPPER_SLAB.slab().get().withPropertiesOf(state));
             }
 
+            else if (block == COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == EXPOSED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_EXPOSED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WEATHERED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_WEATHERED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == OXIDIZED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_OXIDIZED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            }
+
             return Optional.empty();
         }
 
@@ -1162,8 +1249,19 @@ public class MotrBlocks {
                 return Optional.of(OXIDIZED_COPPER_SLAB.slab().get().withPropertiesOf(state));
             }
 
+            else if (block == WAXED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_EXPOSED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(EXPOSED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_WEATHERED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WEATHERED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_OXIDIZED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(OXIDIZED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            }
+
             return Optional.empty();
         }
+
     }
 
     private static WeatheringCopper.WeatherState getWeatherStateFromBlock(Block baseBlock) {
@@ -1176,6 +1274,17 @@ public class MotrBlocks {
         } else if (baseBlock == Blocks.OXIDIZED_COPPER || baseBlock == Blocks.WAXED_OXIDIZED_COPPER) {
             return WeatheringCopper.WeatherState.OXIDIZED;
         }
+
+        else if (baseBlock == Blocks.COPPER_BULB || baseBlock == Blocks.WAXED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.UNAFFECTED;
+        } else if (baseBlock == Blocks.EXPOSED_COPPER_BULB || baseBlock == Blocks.WAXED_EXPOSED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.EXPOSED;
+        } else if (baseBlock == Blocks.WEATHERED_COPPER_BULB || baseBlock == Blocks.WAXED_WEATHERED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.WEATHERED;
+        } else if (baseBlock == Blocks.OXIDIZED_COPPER_BULB || baseBlock == Blocks.WAXED_OXIDIZED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.OXIDIZED;
+        }
+
         return WeatheringCopper.WeatherState.UNAFFECTED;
     }
 

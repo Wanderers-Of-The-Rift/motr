@@ -73,6 +73,7 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrBlocks.BONE_BLOCK_SLAB.slab().get())
                 .add(MotrBlocks.CLAY_SLAB.slab().get())
                 .add(MotrBlocks.RESIN_BLOCK_SLAB.slab().get())
+                .add(MotrBlocks.MAGMA_SLAB.slab().get())
                 .add(getAllButtonBlocks())
                 .add(getAllFenceBlocks())
                 .add(getAllWallBlocks())
@@ -109,6 +110,12 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrBlocks.PINK_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrBlocks.SNOW_SLAB.slab().get());
 
+        tag(BlockTags.MINEABLE_WITH_HOE)
+                .add(MotrBlocks.WARPED_WART_BLOCK_SLAB.slab().get())
+                .add(MotrBlocks.PALE_MOSS_BLOCK_SLAB.slab().get())
+                .add(MotrBlocks.MOSS_BLOCK_SLAB.slab().get())
+                .add(MotrBlocks.NETHER_WART_BLOCK_SLAB.slab().get());
+
         tag(BlockTags.DIRT)
                 .add(MotrBlocks.DIRT_SLAB.slab().get())
                 .add(MotrBlocks.DIRT_PATH_SLAB.slab().get())
@@ -129,6 +136,10 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrBlocks.ICE_SLAB.slab().get())
                 .add(MotrBlocks.PACKED_ICE_SLAB.slab().get())
                 .add(MotrBlocks.BLUE_ICE_SLAB.slab().get());
+
+        tag(BlockTags.WART_BLOCKS)
+                .add(MotrBlocks.WARPED_WART_BLOCK_SLAB.slab().get())
+                .add(MotrBlocks.NETHER_WART_BLOCK_SLAB.slab().get());
 
         tag(BlockTags.SLABS)
                 .add(getAllSlabBlocks());
@@ -162,6 +173,9 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
 
         tag(BlockTags.SNOW)
                 .add(MotrBlocks.SNOW_SLAB.slab().get());
+
+        tag(BlockTags.NEEDS_STONE_TOOL)
+                .add(getAllCopperBlocks());
 
         // spotless:on
 

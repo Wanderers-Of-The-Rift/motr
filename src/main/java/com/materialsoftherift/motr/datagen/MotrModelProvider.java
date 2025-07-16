@@ -18,6 +18,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,12 @@ public class MotrModelProvider extends ModelProvider {
     private static final Map<String, String> COPPER_TEXTURE_OVERRIDES = Map.ofEntries(
             Map.entry("waxed_copper_block", "copper_block"), Map.entry("waxed_exposed_copper", "exposed_copper"),
             Map.entry("waxed_weathered_copper", "weathered_copper"),
-            Map.entry("waxed_oxidized_copper", "oxidized_copper")
+            Map.entry("waxed_oxidized_copper", "oxidized_copper"),
+
+            Map.entry("waxed_copper_bulb", "copper_bulb"),
+            Map.entry("waxed_exposed_copper_bulb", "exposed_copper_bulb"),
+            Map.entry("waxed_weathered_copper_bulb", "weathered_copper_bulb"),
+            Map.entry("waxed_oxidized_copper_bulb", "oxidized_copper_bulb")
     );
 
     public MotrModelProvider(PackOutput output) {
@@ -51,9 +57,29 @@ public class MotrModelProvider extends ModelProvider {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
+        // Muuta model providerissa copper slabs -looppia:
+
         MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
-            String textureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
-            registerTrimmSlabModel(blockModels, slabInfo.slab().get(), textureName, textureName, textureName);
+            if (id.contains("bulb")) {
+                // Special handling for all copper bulb variants with state-based textures
+                // KÄYTÄ COPPER_TEXTURE_OVERRIDES MAPPEJA MYÖS BULBEILLE!
+                String baseTextureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
+
+                System.out.println("Bulb texture mapping: " + id + " -> " + baseTextureName);
+
+                registerCopperBulbSlabModel(blockModels, slabInfo.slab().get(), baseTextureName);
+
+                // Item model generaatio
+                ResourceLocation itemModel = MaterialsOfTheRift
+                        .id("block/" + getBlockName(slabInfo.slab().get()) + "_unlit");
+                itemModels.itemModelOutput.accept(
+                        slabInfo.slab().get().asItem(), ItemModelUtils.plainModel(itemModel)
+                );
+            } else {
+                // Regular copper slabs
+                String textureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
+                registerTrimmSlabModel(blockModels, slabInfo.slab().get(), textureName, textureName, textureName);
+            }
         });
 
         MotrBlocks.REGISTERED_SILKTOUCH_SLABS.forEach((textureId, slabInfo) -> {
@@ -385,6 +411,167 @@ public class MotrModelProvider extends ModelProvider {
         itemModels.itemModelOutput.accept(
                 fenceGate.asItem(), ItemModelUtils.plainModel(closed)
         );
+    }
+
+// Muuta model providerissa registerCopperBulbSlabModel-metodia:
+
+    private void registerCopperBulbSlabModel(BlockModelGenerators blockModels, Block slab, String baseTextureName) {
+
+        System.out.println("=== DEBUG: Registering copper bulb slab model ===");
+        System.out.println("Block: " + getBlockName(slab));
+        System.out.println("Base texture: " + baseTextureName);
+
+        // Hae LIT ja POWERED propertyt suoraan block instanssista
+        BooleanProperty litProperty = null;
+        BooleanProperty poweredProperty = null;
+
+        System.out.println("Available properties:");
+        for (var property : slab.getStateDefinition().getProperties()) {
+            System.out.println("  - " + property.getName() + " (" + property.getClass().getSimpleName() + ")");
+            if ("lit".equals(property.getName()) && property instanceof BooleanProperty) {
+                litProperty = (BooleanProperty) property;
+                System.out.println("    Found LIT property!");
+            }
+            if ("powered".equals(property.getName()) && property instanceof BooleanProperty) {
+                poweredProperty = (BooleanProperty) property;
+                System.out.println("    Found POWERED property!");
+            }
+        }
+
+        // Jos propertyjä ei löydy, käytä standardeja
+        if (litProperty == null) {
+            litProperty = BlockStateProperties.LIT;
+            System.out.println("Using fallback LIT property");
+        }
+        if (poweredProperty == null) {
+            poweredProperty = BlockStateProperties.POWERED;
+            System.out.println("Using fallback POWERED property");
+        }
+
+        // Create texture mappings for each state
+        TextureMapping unlitMapping = new TextureMapping()
+                .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + baseTextureName))
+                .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + baseTextureName))
+                .put(TextureSlot.BOTTOM, ResourceLocation.withDefaultNamespace("block/" + baseTextureName));
+
+        TextureMapping unpoweredMapping = new TextureMapping()
+                .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_powered"))
+                .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_powered"))
+                .put(TextureSlot.BOTTOM,
+                        ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_powered"));
+
+        TextureMapping litMapping = new TextureMapping()
+                .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_lit"))
+                .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_lit"))
+                .put(TextureSlot.BOTTOM, ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_lit"));
+
+        TextureMapping litPoweredMapping = new TextureMapping()
+                .put(TextureSlot.SIDE,
+                        ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_lit_powered"))
+                .put(TextureSlot.TOP,
+                        ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_lit_powered"))
+                .put(TextureSlot.BOTTOM,
+                        ResourceLocation.withDefaultNamespace("block/" + baseTextureName + "_lit_powered"));
+
+        System.out.println("Creating models with textures:");
+        System.out.println("  Unlit: " + baseTextureName);
+        System.out.println("  Powered: " + baseTextureName + "_powered");
+        System.out.println("  Lit: " + baseTextureName + "_lit");
+        System.out.println("  Lit+Powered: " + baseTextureName + "_lit_powered");
+
+        // Create models for each state and slab type
+        createCopperBulbSlabModels(blockModels, slab, unlitMapping, "_unlit");
+        createCopperBulbSlabModels(blockModels, slab, unpoweredMapping, "_unpowered");
+        createCopperBulbSlabModels(blockModels, slab, litMapping, "_lit");
+        createCopperBulbSlabModels(blockModels, slab, litPoweredMapping, "_lit_powered");
+
+        // Create the blockstate with complex property dispatch using the found properties
+        String blockName = getBlockName(slab);
+        System.out.println("Generating blockstate for: " + blockName);
+
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(slab)
+                .with(PropertyDispatch.properties(BlockStateProperties.SLAB_TYPE, litProperty, poweredProperty)
+                        // ... (rest of the selects remain the same)
+                        .select(SlabType.BOTTOM, false, false, Variant.variant()
+                                .with(VariantProperties.MODEL, MaterialsOfTheRift.id("block/" + blockName + "_unlit")))
+                        .select(SlabType.TOP, false, false,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_unlit_top")))
+                        .select(SlabType.DOUBLE, false, false,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_unlit_double")))
+
+                        .select(SlabType.BOTTOM, false, true,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_unpowered")))
+                        .select(SlabType.TOP, false, true,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_unpowered_top")))
+                        .select(SlabType.DOUBLE, false, true,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_unpowered_double")))
+
+                        .select(SlabType.BOTTOM, true, false, Variant.variant()
+                                .with(VariantProperties.MODEL, MaterialsOfTheRift.id("block/" + blockName + "_lit")))
+                        .select(SlabType.TOP, true, false,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_lit_top")))
+                        .select(SlabType.DOUBLE, true, false,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_lit_double")))
+
+                        .select(SlabType.BOTTOM, true, true,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_lit_powered")))
+                        .select(SlabType.TOP, true, true,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_lit_powered_top")))
+                        .select(SlabType.DOUBLE, true, true,
+                                Variant.variant()
+                                        .with(VariantProperties.MODEL,
+                                                MaterialsOfTheRift.id("block/" + blockName + "_lit_powered_double")))
+                ));
+
+        System.out.println("=== END DEBUG ===");
+    }
+
+    private void createCopperBulbSlabModels(
+            BlockModelGenerators blockModels,
+            Block slab,
+            TextureMapping mapping,
+            String suffix) {
+        ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/texture_slab_bottom"))
+                .suffix(suffix)
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .create(slab, mapping, blockModels.modelOutput);
+
+        ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/texture_slab_top"))
+                .suffix(suffix + "_top")
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .create(slab, mapping, blockModels.modelOutput);
+
+        ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(slab, suffix + "_double", mapping, blockModels.modelOutput);
+    }
+
+    private String getBlockName(Block block) {
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block).getPath();
     }
 
 }
