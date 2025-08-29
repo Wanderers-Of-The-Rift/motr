@@ -27,6 +27,8 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         // Adds a block translation.
 
+        addNoGravTranslations(MotrBlocks.REGISTERED_NOGRAV_BLOCKS);
+
         addWallTranslations(MotrBlocks.REGISTERED_STANDARD_WALLS);
         addWallTranslations(MotrBlocks.REGISTERED_GLASS_WALLS);
 
@@ -64,6 +66,13 @@ public class MotrLanguageProvider extends LanguageProvider {
             sb.append(" ");
         }
         return sb.toString().trim();
+    }
+
+    private void addNoGravTranslations(Map<String, MotrBlocks.NoGravInfo> noGravMap) {
+        noGravMap.forEach((baseName, noGravInfo) -> {
+            String translation = "No Grav " + snakeCaseToCapitalizedCase(baseName);
+            addBlock(noGravInfo.block(), translation);
+        });
     }
 
     private void addStairTranslations(Map<String, MotrBlocks.StairInfo> stairMap) {

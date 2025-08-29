@@ -108,7 +108,8 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrBlocks.PURPLE_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrBlocks.MAGENTA_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrBlocks.PINK_CONCRETE_POWDER_SLAB.slab().get())
-                .add(MotrBlocks.SNOW_SLAB.slab().get());
+                .add(MotrBlocks.SNOW_SLAB.slab().get())
+                .add(getAllNoGravBlocks());
 
         tag(BlockTags.MINEABLE_WITH_HOE)
                 .add(MotrBlocks.WARPED_WART_BLOCK_SLAB.slab().get())
@@ -179,6 +180,13 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
 
         // spotless:on
 
+    }
+
+    private Block[] getAllNoGravBlocks() {
+        return MotrBlocks.REGISTERED_NOGRAV_BLOCKS.values()
+                .stream()
+                .map(nogravInfo -> nogravInfo.block().get())
+                .toArray(Block[]::new);
     }
 
     private Block[] getAllSlabBlocks() {

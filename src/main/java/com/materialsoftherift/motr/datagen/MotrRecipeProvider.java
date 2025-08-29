@@ -28,6 +28,18 @@ public class MotrRecipeProvider extends RecipeProvider {
     protected void buildRecipes() {
         HolderGetter<Item> getter = this.registries.lookupOrThrow(Registries.ITEM);
 
+        MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((id, noGravInfo) -> {
+            ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, noGravInfo.block().get(), 8)
+                    .pattern("GGG")
+                    .pattern("GHG")
+                    .pattern("GGG")
+                    .define('G', noGravInfo.getBaseItem())
+                    .define('H', Items.CHORUS_FRUIT)
+                    .unlockedBy("has_" + id, this.has(noGravInfo.getBaseItem()))
+                    .unlockedBy("has_chorus_fruit", this.has(Items.CHORUS_FRUIT))
+                    .save(this.output);
+        });
+
         MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")

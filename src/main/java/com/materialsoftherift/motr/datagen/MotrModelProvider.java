@@ -45,6 +45,10 @@ public class MotrModelProvider extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
 
+        MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
+            registerNoGravModel(blockModels, noGravInfo, textureName);
+        });
+
         blockModels.createTrivialBlock(MotrBlocks.HAY_CARPET.get(), TexturedModel.CARPET.updateTexture(
                 mapping -> mapping.put(TextureSlot.WOOL, ResourceLocation.withDefaultNamespace("block/hay_block_top"))
         ));
@@ -162,6 +166,14 @@ public class MotrModelProvider extends ModelProvider {
         MotrBlocks.REGISTERED_STANDARD_STAIRS.forEach((textureName, stairInfo) -> {
             registerStandardStairModel(blockModels, stairInfo.stair().get(), textureName);
         });
+    }
+
+    private void registerNoGravModel(BlockModelGenerators blockModels, MotrBlocks.NoGravInfo info, String textureName) {
+        blockModels.createTrivialBlock(
+                info.block().get(),
+                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL,
+                        ResourceLocation.withDefaultNamespace("block/" + textureName)))
+        );
     }
 
     private void registerStandardSlabModel(BlockModelGenerators blockModels, Block slab, String textureName) {
