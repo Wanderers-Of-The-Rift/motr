@@ -206,8 +206,8 @@ public class MotrModelProvider extends ModelProvider {
                   "textures": { "layer0": "%s" },
                   "display": {
                     "gui": {
-                      "translation": [0, 0, 6],   // vedä overlaytä eteenpäin (negatiivinen Z = kohti kameraa)
-                      "scale": [1, 1, 1]   // hiuksenhieno suurennus, ettei reuna vilku
+                      "translation": [0, 0, 6],
+                      "scale": [1, 1, 1]
                     },
                     "thirdperson_righthand": { "scale": [0,0,0] },
                     "thirdperson_lefthand":  { "scale": [0,0,0] },
