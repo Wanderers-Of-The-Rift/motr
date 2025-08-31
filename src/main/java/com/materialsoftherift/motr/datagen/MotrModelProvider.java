@@ -10,10 +10,13 @@ import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.blockstates.Variant;
 import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -46,7 +49,7 @@ public class MotrModelProvider extends ModelProvider {
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
 
         MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
-            registerNoGravModel(blockModels, noGravInfo, textureName);
+            registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
 
         blockModels.createTrivialBlock(MotrBlocks.HAY_CARPET.get(), TexturedModel.CARPET.updateTexture(
@@ -168,12 +171,67 @@ public class MotrModelProvider extends ModelProvider {
         });
     }
 
-    private void registerNoGravModel(BlockModelGenerators blockModels, MotrBlocks.NoGravInfo info, String textureName) {
-        blockModels.createTrivialBlock(
-                info.block().get(),
-                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL,
-                        ResourceLocation.withDefaultNamespace("block/" + textureName)))
+    private void registerNoGravModel(
+            BlockModelGenerators blockModels,
+            ItemModelGenerators itemModels,
+            MotrBlocks.NoGravInfo info,
+            String textureName) {
+        var block = info.block().get();
+        var item = block.asItem();
+
+        ResourceLocation blockTex = ResourceLocation.withDefaultNamespace("block/" + textureName);
+        ResourceLocation blockModel = ModelLocationUtils.getModelLocation(block);
+        ModelTemplates.CUBE_ALL.create(blockModel, TextureMapping.cube(blockTex), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, blockModel));
+
+        ResourceLocation itemModel = ModelLocationUtils.getModelLocation(item);
+        ResourceLocation baseId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
+                itemModel.getPath() + "_base");
+        ResourceLocation overlayId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
+                itemModel.getPath() + "_overlay");
+        ResourceLocation dotTex = ResourceLocation.fromNamespaceAndPath(MaterialsOfTheRift.MODID, "item/dot");
+
+        String base3dJson = """
+                {
+                  "parent": "%s"
+                }
+                """.formatted(blockModel);
+        itemModels.modelOutput.accept(
+                baseId, () -> com.google.gson.JsonParser.parseString(base3dJson).getAsJsonObject()
         );
+
+        String overlayGuiOnlyJson = """
+                {
+                  "parent": "minecraft:item/generated",
+                  "textures": { "layer0": "%s" },
+                  "display": {
+                    "gui": {
+                      "translation": [0, 0, 6],   // vedä overlaytä eteenpäin (negatiivinen Z = kohti kameraa)
+                      "scale": [1, 1, 1]   // hiuksenhieno suurennus, ettei reuna vilku
+                    },
+                    "thirdperson_righthand": { "scale": [0,0,0] },
+                    "thirdperson_lefthand":  { "scale": [0,0,0] },
+                    "firstperson_righthand": { "scale": [0,0,0] },
+                    "firstperson_lefthand":  { "scale": [0,0,0] },
+                    "ground":                { "scale": [0,0,0] },
+                    "fixed":                 { "scale": [0,0,0] }
+                  }
+                }
+                """.formatted(dotTex);
+
+        itemModels.modelOutput.accept(
+                overlayId, () -> com.google.gson.JsonParser.parseString(overlayGuiOnlyJson).getAsJsonObject()
+        );
+
+        itemModels.itemModelOutput.accept(
+                item, new CompositeModel.Unbaked(
+                        java.util.List.of(
+                                new BlockModelWrapper.Unbaked(overlayId, java.util.Collections.emptyList()),
+                                new BlockModelWrapper.Unbaked(baseId, java.util.Collections.emptyList())
+                        )
+                )
+        );
+
     }
 
     private void registerStandardSlabModel(BlockModelGenerators blockModels, Block slab, String textureName) {
