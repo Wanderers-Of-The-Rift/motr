@@ -1,10 +1,24 @@
 package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
@@ -13,25 +27,39 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class MotrBlocks {
 
-    public static class IceSlabBlock extends SlabBlock {
-        public IceSlabBlock(Properties properties) {
-            super(properties);
+    public static class NoGravInfo {
+        private final DeferredBlock<Block> block;
+        private final Block baseBlock;
+
+        public NoGravInfo(DeferredBlock<Block> block, Block baseBlock) {
+            this.block = block;
+            this.baseBlock = baseBlock;
         }
 
-        @Override
-        public float getFriction() {
-            return 0.98f;
+        public DeferredBlock<Block> block() {
+            return block;
+        }
+
+        public Item getBaseItem() {
+            return baseBlock.asItem();
         }
     }
 
@@ -46,10 +74,6 @@ public class MotrBlocks {
 
         public DeferredBlock<SlabBlock> slab() {
             return slab;
-        }
-
-        public Block baseBlock() {
-            return baseBlock;
         }
 
         public Item getBaseItem() {
@@ -70,17 +94,10 @@ public class MotrBlocks {
             return wall;
         }
 
-        public Block baseBlock() {
-            return baseBlock;
-        }
-
         public Item getBaseItem() {
-            return wall.get().asItem();
+            return baseBlock.asItem();
         }
 
-        public Item getWallItem() {
-            return wall.get().asItem();
-        }
     }
 
     public static class ButtonInfo {
@@ -94,10 +111,6 @@ public class MotrBlocks {
 
         public DeferredBlock<ButtonBlock> button() {
             return button;
-        }
-
-        public Block baseBlock() {
-            return baseBlock;
         }
 
         public Item getBaseItem() {
@@ -118,10 +131,6 @@ public class MotrBlocks {
             return fence;
         }
 
-        public Block baseBlock() {
-            return baseBlock;
-        }
-
         public Item getBaseItem() {
             return baseBlock.asItem();
         }
@@ -140,17 +149,10 @@ public class MotrBlocks {
             return fenceGate;
         }
 
-        public Block baseBlock() {
-            return baseBlock;
-        }
-
         public Item getBaseItem() {
             return baseBlock.asItem();
         }
 
-        public Item getFenceGateItem() {
-            return fenceGate.get().asItem();
-        }
     }
 
     public static class StairInfo {
@@ -166,16 +168,70 @@ public class MotrBlocks {
             return stair;
         }
 
-        public Block baseBlock() {
-            return baseBlock;
-        }
-
         public Item getBaseItem() {
             return baseBlock.asItem();
         }
     }
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
+
+    public static final NoGravInfo NOGRAV_GRAVEL = registerNoGravBlock("nograv_gravel", Blocks.GRAVEL);
+    public static final NoGravInfo NOGRAV_SAND = registerNoGravBlock("nograv_sand", Blocks.SAND);
+    public static final NoGravInfo NOGRAV_RED_SAND = registerNoGravBlock("nograv_red_sand", Blocks.RED_SAND);
+
+    public static final NoGravInfo NOGRAV_WHITE_CONCRETE_POWDER = registerNoGravBlock("nograv_white_concrete_powder",
+            Blocks.WHITE_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_LIGHT_GRAY_CONCRETE_POWDER = registerNoGravBlock(
+            "nograv_light_gray_concrete_powder", Blocks.LIGHT_GRAY_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_GRAY_CONCRETE_POWDER = registerNoGravBlock("nograv_gray_concrete_powder",
+            Blocks.GRAY_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_BLACK_CONCRETE_POWDER = registerNoGravBlock("nograv_black_concrete_powder",
+            Blocks.BLACK_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_BROWN_CONCRETE_POWDER = registerNoGravBlock("nograv_brown_concrete_powder",
+            Blocks.BROWN_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_RED_CONCRETE_POWDER = registerNoGravBlock("nograv_red_concrete_powder",
+            Blocks.RED_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_ORANGE_CONCRETE_POWDER = registerNoGravBlock("nograv_orange_concrete_powder",
+            Blocks.ORANGE_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_YELLOW_CONCRETE_POWDER = registerNoGravBlock("nograv_yellow_concrete_powder",
+            Blocks.YELLOW_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_LIME_CONCRETE_POWDER = registerNoGravBlock("nograv_lime_concrete_powder",
+            Blocks.LIME_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_GREEN_CONCRETE_POWDER = registerNoGravBlock("nograv_green_concrete_powder",
+            Blocks.GREEN_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_CYAN_CONCRETE_POWDER = registerNoGravBlock("nograv_cyan_concrete_powder",
+            Blocks.CYAN_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_LIGHT_BLUE_CONCRETE_POWDER = registerNoGravBlock(
+            "nograv_light_blue_concrete_powder", Blocks.LIGHT_BLUE_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_BLUE_CONCRETE_POWDER = registerNoGravBlock("nograv_blue_concrete_powder",
+            Blocks.BLUE_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_PURPLE_CONCRETE_POWDER = registerNoGravBlock("nograv_purple_concrete_powder",
+            Blocks.PURPLE_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_MAGENTA_CONCRETE_POWDER = registerNoGravBlock(
+            "nograv_magenta_concrete_powder", Blocks.MAGENTA_CONCRETE_POWDER);
+    public static final NoGravInfo NOGRAV_PINK_CONCRETE_POWDER = registerNoGravBlock("nograv_pink_concrete_powder",
+            Blocks.PINK_CONCRETE_POWDER);
+
+    public static final Map<String, NoGravInfo> REGISTERED_NOGRAV_BLOCKS = Map.ofEntries(
+            Map.entry("gravel", NOGRAV_GRAVEL), Map.entry("sand", NOGRAV_SAND), Map.entry("red_sand", NOGRAV_RED_SAND),
+
+            Map.entry("white_concrete_powder", NOGRAV_WHITE_CONCRETE_POWDER),
+            Map.entry("light_gray_concrete_powder", NOGRAV_LIGHT_GRAY_CONCRETE_POWDER),
+            Map.entry("gray_concrete_powder", NOGRAV_GRAY_CONCRETE_POWDER),
+            Map.entry("black_concrete_powder", NOGRAV_BLACK_CONCRETE_POWDER),
+            Map.entry("brown_concrete_powder", NOGRAV_BROWN_CONCRETE_POWDER),
+            Map.entry("red_concrete_powder", NOGRAV_RED_CONCRETE_POWDER),
+            Map.entry("orange_concrete_powder", NOGRAV_ORANGE_CONCRETE_POWDER),
+            Map.entry("yellow_concrete_powder", NOGRAV_YELLOW_CONCRETE_POWDER),
+            Map.entry("lime_concrete_powder", NOGRAV_LIME_CONCRETE_POWDER),
+            Map.entry("green_concrete_powder", NOGRAV_GREEN_CONCRETE_POWDER),
+            Map.entry("cyan_concrete_powder", NOGRAV_CYAN_CONCRETE_POWDER),
+            Map.entry("light_blue_concrete_powder", NOGRAV_LIGHT_BLUE_CONCRETE_POWDER),
+            Map.entry("blue_concrete_powder", NOGRAV_BLUE_CONCRETE_POWDER),
+            Map.entry("purple_concrete_powder", NOGRAV_PURPLE_CONCRETE_POWDER),
+            Map.entry("magenta_concrete_powder", NOGRAV_MAGENTA_CONCRETE_POWDER),
+            Map.entry("pink_concrete_powder", NOGRAV_PINK_CONCRETE_POWDER)
+    );
 
     public static final SlabInfo WHITE_CONCRETE_SLAB = registerSlabBlock("white_concrete_slab", Blocks.WHITE_CONCRETE);
     public static final SlabInfo LIGHT_GRAY_CONCRETE_SLAB = registerSlabBlock("light_gray_concrete_slab",
@@ -312,6 +368,9 @@ public class MotrBlocks {
     public static final SlabInfo GOLD_BLOCK_SLAB = registerSlabBlock("gold_block_slab", Blocks.GOLD_BLOCK);
     public static final SlabInfo IRON_BLOCK_SLAB = registerSlabBlock("iron_block_slab", Blocks.IRON_BLOCK);
 
+    public static final SlabInfo MAGMA_SLAB = registerSlabBlock("magma_slab", Blocks.MAGMA_BLOCK);
+    public static final SlabInfo SNOW_SLAB = registerSlabBlock("snow_slab", Blocks.SNOW_BLOCK);
+
     public static final Map<String, SlabInfo> REGISTERED_STANDARD_SLABS = Map.ofEntries(
             Map.entry("white_concrete", WHITE_CONCRETE_SLAB),
             Map.entry("light_gray_concrete", LIGHT_GRAY_CONCRETE_SLAB), Map.entry("gray_concrete", GRAY_CONCRETE_SLAB),
@@ -338,10 +397,6 @@ public class MotrBlocks {
             Map.entry("purple_concrete_powder", PURPLE_CONCRETE_POWDER_SLAB),
             Map.entry("magenta_concrete_powder", MAGENTA_CONCRETE_POWDER_SLAB),
             Map.entry("pink_concrete_powder", PINK_CONCRETE_POWDER_SLAB),
-            Map.entry("tube_coral_block", TUBE_CORAL_BLOCK_SLAB),
-            Map.entry("brain_coral_block", BRAIN_CORAL_BLOCK_SLAB),
-            Map.entry("bubble_coral_block", BUBBLE_CORAL_BLOCK_SLAB),
-            Map.entry("fire_coral_block", FIRE_CORAL_BLOCK_SLAB), Map.entry("horn_coral_block", HORN_CORAL_BLOCK_SLAB),
             Map.entry("warped_wart_block", WARPED_WART_BLOCK_SLAB), Map.entry("soul_sand", SOUL_SAND_SLAB),
             Map.entry("soul_soil", SOUL_SOIL_SLAB), Map.entry("rooted_dirt", ROOTED_DIRT_SLAB),
             Map.entry("raw_iron_block", RAW_IRON_BLOCK_SLAB), Map.entry("raw_gold_block", RAW_GOLD_BLOCK_SLAB),
@@ -350,7 +405,16 @@ public class MotrBlocks {
             Map.entry("moss_block", MOSS_BLOCK_SLAB), Map.entry("ice", ICE_SLAB),
             Map.entry("gilded_blackstone", GILDED_BLACKSTONE_SLAB), Map.entry("dirt", DIRT_SLAB),
             Map.entry("clay", CLAY_SLAB), Map.entry("coarse_dirt", COARSE_DIRT_SLAB),
-            Map.entry("blue_ice", BLUE_ICE_SLAB), Map.entry("resin_block", RESIN_BLOCK_SLAB)
+            Map.entry("blue_ice", BLUE_ICE_SLAB), Map.entry("resin_block", RESIN_BLOCK_SLAB),
+            Map.entry("magma", MAGMA_SLAB)
+
+    );
+
+    public static final Map<String, SlabInfo> REGISTERED_SILKTOUCH_SLABS = Map.ofEntries(
+            Map.entry("snow", SNOW_SLAB), Map.entry("tube_coral_block", TUBE_CORAL_BLOCK_SLAB),
+            Map.entry("brain_coral_block", BRAIN_CORAL_BLOCK_SLAB),
+            Map.entry("bubble_coral_block", BUBBLE_CORAL_BLOCK_SLAB),
+            Map.entry("fire_coral_block", FIRE_CORAL_BLOCK_SLAB), Map.entry("horn_coral_block", HORN_CORAL_BLOCK_SLAB)
     );
 
     public static final Map<String, SlabInfo> REGISTERED_GLASS_SLABS = Map.ofEntries(
@@ -886,6 +950,66 @@ public class MotrBlocks {
 
     );
 
+    public static final SlabInfo COPPER_SLAB = registerCopperSlabBlock("copper_slab", Blocks.COPPER_BLOCK);
+    public static final SlabInfo EXPOSED_COPPER_SLAB = registerCopperSlabBlock("exposed_copper_slab",
+            Blocks.EXPOSED_COPPER);
+    public static final SlabInfo WEATHERED_COPPER_SLAB = registerCopperSlabBlock("weathered_copper_slab",
+            Blocks.WEATHERED_COPPER);
+    public static final SlabInfo OXIDIZED_COPPER_SLAB = registerCopperSlabBlock("oxidized_copper_slab",
+            Blocks.OXIDIZED_COPPER);
+
+    public static final SlabInfo WAXED_COPPER_SLAB = registerCopperSlabBlock("waxed_copper_slab",
+            Blocks.WAXED_COPPER_BLOCK);
+    public static final SlabInfo WAXED_EXPOSED_COPPER_SLAB = registerCopperSlabBlock("waxed_exposed_copper_slab",
+            Blocks.WAXED_EXPOSED_COPPER);
+    public static final SlabInfo WAXED_WEATHERED_COPPER_SLAB = registerCopperSlabBlock("waxed_weathered_copper_slab",
+            Blocks.WAXED_WEATHERED_COPPER);
+    public static final SlabInfo WAXED_OXIDIZED_COPPER_SLAB = registerCopperSlabBlock("waxed_oxidized_copper_slab",
+            Blocks.WAXED_OXIDIZED_COPPER);
+    public static final SlabInfo COPPER_BULB_SLAB = registerCopperSlabBlock("copper_bulb_slab", Blocks.COPPER_BULB);
+    public static final SlabInfo EXPOSED_COPPER_BULB_SLAB = registerCopperSlabBlock("exposed_copper_bulb_slab",
+            Blocks.EXPOSED_COPPER_BULB);
+    public static final SlabInfo WEATHERED_COPPER_BULB_SLAB = registerCopperSlabBlock("weathered_copper_bulb_slab",
+            Blocks.WEATHERED_COPPER_BULB);
+    public static final SlabInfo OXIDIZED_COPPER_BULB_SLAB = registerCopperSlabBlock("oxidized_copper_bulb_slab",
+            Blocks.OXIDIZED_COPPER_BULB);
+    public static final SlabInfo WAXED_COPPER_BULB_SLAB = registerCopperSlabBlock("waxed_copper_bulb_slab",
+            Blocks.WAXED_COPPER_BULB);
+    public static final SlabInfo WAXED_EXPOSED_COPPER_BULB_SLAB = registerCopperSlabBlock(
+            "waxed_exposed_copper_bulb_slab", Blocks.WAXED_EXPOSED_COPPER_BULB);
+    public static final SlabInfo WAXED_WEATHERED_COPPER_BULB_SLAB = registerCopperSlabBlock(
+            "waxed_weathered_copper_bulb_slab", Blocks.WAXED_WEATHERED_COPPER_BULB);
+    public static final SlabInfo WAXED_OXIDIZED_COPPER_BULB_SLAB = registerCopperSlabBlock(
+            "waxed_oxidized_copper_bulb_slab", Blocks.WAXED_OXIDIZED_COPPER_BULB);
+
+    public static final Map<String, SlabInfo> REGISTERED_COPPER_SLABS = Map.ofEntries(
+            Map.entry("copper_block", COPPER_SLAB), Map.entry("exposed_copper", EXPOSED_COPPER_SLAB),
+            Map.entry("weathered_copper", WEATHERED_COPPER_SLAB), Map.entry("oxidized_copper", OXIDIZED_COPPER_SLAB),
+            Map.entry("waxed_copper_block", WAXED_COPPER_SLAB),
+            Map.entry("waxed_exposed_copper", WAXED_EXPOSED_COPPER_SLAB),
+            Map.entry("waxed_weathered_copper", WAXED_WEATHERED_COPPER_SLAB),
+            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB), Map.entry("copper_bulb", COPPER_BULB_SLAB),
+            Map.entry("exposed_copper_bulb", EXPOSED_COPPER_BULB_SLAB),
+            Map.entry("weathered_copper_bulb", WEATHERED_COPPER_BULB_SLAB),
+            Map.entry("oxidized_copper_bulb", OXIDIZED_COPPER_BULB_SLAB),
+            Map.entry("waxed_copper_bulb", WAXED_COPPER_BULB_SLAB),
+            Map.entry("waxed_exposed_copper_bulb", WAXED_EXPOSED_COPPER_BULB_SLAB),
+            Map.entry("waxed_weathered_copper_bulb", WAXED_WEATHERED_COPPER_BULB_SLAB),
+            Map.entry("waxed_oxidized_copper_bulb", WAXED_OXIDIZED_COPPER_BULB_SLAB)
+    );
+
+    // Used only for getting a second recipe for waxed versions.
+    public static final Map<String, SlabInfo> REGISTERED_WAXED_COPPER_SLABS = Map.ofEntries(
+            Map.entry("waxed_copper_block", WAXED_COPPER_SLAB),
+            Map.entry("waxed_exposed_copper", WAXED_EXPOSED_COPPER_SLAB),
+            Map.entry("waxed_weathered_copper", WAXED_WEATHERED_COPPER_SLAB),
+            Map.entry("waxed_oxidized_copper", WAXED_OXIDIZED_COPPER_SLAB),
+            Map.entry("waxed_copper_bulb", WAXED_COPPER_BULB_SLAB),
+            Map.entry("waxed_exposed_copper_bulb", WAXED_EXPOSED_COPPER_BULB_SLAB),
+            Map.entry("waxed_weathered_copper_bulb", WAXED_WEATHERED_COPPER_BULB_SLAB),
+            Map.entry("waxed_oxidized_copper_bulb", WAXED_OXIDIZED_COPPER_BULB_SLAB)
+    );
+
     public static final DeferredBlock<CarpetBlock> HAY_CARPET = registerCarpet("hay_carpet", Blocks.HAY_BLOCK);
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String key, Supplier<T> sup) {
@@ -900,16 +1024,28 @@ public class MotrBlocks {
         return register;
     }
 
+    private static NoGravInfo registerNoGravBlock(String id, Block baseBlock) {
+        DeferredBlock<Block> reg = registerBlock(id,
+                () -> new Block(BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id)))
+        );
+        return new NoGravInfo(reg, baseBlock);
+    }
+
     private static SlabInfo registerSlabBlock(String id, Block baseBlock) {
         DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
             BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
 
             if (baseBlock == Blocks.ICE || baseBlock == Blocks.PACKED_ICE || baseBlock == Blocks.BLUE_ICE) {
-                return new MotrBlocks.IceSlabBlock(properties.friction(0.98f));
+                return new IceSlabBlock(properties.friction(0.98f));
+            }
+
+            if (baseBlock == Blocks.MAGMA_BLOCK) {
+                return new MagmaSlabBlock(properties);
             }
 
             return new SlabBlock(properties);
         });
+
         return new SlabInfo(slab, baseBlock);
     }
 
@@ -948,6 +1084,261 @@ public class MotrBlocks {
         return registerDevBlock(id, () -> new CarpetBlock(
                 BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id))
         ));
+    }
+
+    private static SlabInfo registerCopperSlabBlock(String id, Block baseBlock) {
+        DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
+            BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
+            WeatheringCopper.WeatherState weatherState = getWeatherStateFromBlock(baseBlock);
+
+            if (id.contains("bulb")) {
+                return new CopperBulbSlabBlock(weatherState,
+                        properties.lightLevel(state -> state.getValue(CopperBulbSlabBlock.LIT) ? 15 : 0));
+            }
+
+            return new CopperSlabBlock(weatherState, properties);
+        });
+
+        return new SlabInfo(slab, baseBlock);
+    }
+
+    public static class CopperBulbSlabBlock extends CopperSlabBlock {
+        public static final BooleanProperty LIT = BlockStateProperties.LIT;
+        public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+
+        public CopperBulbSlabBlock(WeatherState state, Properties properties) {
+            super(state, properties);
+            this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(POWERED, false));
+        }
+
+        @Override
+        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+            super.createBlockStateDefinition(builder);
+            builder.add(LIT, POWERED);
+        }
+
+        @Override
+        public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+            super.onPlace(state, level, pos, oldState, movedByPiston);
+            if (!level.isClientSide) {
+                checkRedstoneSignal(state, level, pos);
+            }
+        }
+
+        @Override
+        public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            if (!level.isClientSide) {
+                checkRedstoneSignal(state, level, pos);
+            }
+        }
+
+        private void checkRedstoneSignal(BlockState state, Level level, BlockPos pos) {
+            boolean receivingPower = level.hasNeighborSignal(pos);
+            boolean wasPowered = state.getValue(POWERED);
+
+            if (receivingPower && !wasPowered) {
+                boolean currentlyLit = state.getValue(LIT);
+                level.setBlock(pos, state.setValue(LIT, !currentlyLit).setValue(POWERED, true), 3);
+            } else if (!receivingPower && wasPowered) {
+                level.setBlock(pos, state.setValue(POWERED, false), 3);
+            }
+
+            level.scheduleTick(pos, this, 1);
+        }
+    }
+
+    public static class MagmaSlabBlock extends SlabBlock {
+
+        public MagmaSlabBlock(Properties properties) {
+            super(properties.lightLevel(state -> 3));
+        }
+
+        @Override
+        public void stepOn(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.Entity entity) {
+            if (entity instanceof LivingEntity living) {
+                boolean inWater = level.getFluidState(pos.above()).is(net.minecraft.tags.FluidTags.WATER);
+
+                if (!living.isCrouching() && !living.hasEffect(MobEffects.FIRE_RESISTANCE)
+                        && (level.getBlockState(pos.above()).isAir() || inWater)) {
+                    living.hurt(level.damageSources().hotFloor(), 1.0F);
+                }
+            }
+
+            super.stepOn(level, pos, state, entity);
+        }
+//needs bubble colums
+    }
+
+    public static class IceSlabBlock extends SlabBlock {
+        public IceSlabBlock(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public float getFriction() {
+            return 0.98f;
+        }
+    }
+
+    public static class CopperSlabBlock extends SlabBlock implements WeatheringCopper {
+        private final WeatheringCopper.WeatherState weatherState;
+
+        public CopperSlabBlock(WeatheringCopper.WeatherState weatherState, BlockBehaviour.Properties properties) {
+            super(properties);
+            this.weatherState = weatherState;
+        }
+
+        @Override
+        public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            this.changeOverTime(state, level, pos, random);
+        }
+
+        @Override
+        public boolean isRandomlyTicking(BlockState state) {
+            return WeatheringCopper.getNext(state.getBlock()).isPresent();
+        }
+
+        @Override
+        public WeatherState getAge() {
+            return this.weatherState;
+        }
+
+        @Override
+        public Optional<BlockState> getNext(BlockState state) {
+            return WeatheringCopper.getNext(state.getBlock()).map(block -> block.withPropertiesOf(state));
+        }
+
+        @Override
+        protected InteractionResult useItemOn(
+                ItemStack stack,
+                BlockState state,
+                Level level,
+                BlockPos pos,
+                Player player,
+                InteractionHand hand,
+                BlockHitResult hitResult) {
+            if (stack.is(Items.HONEYCOMB)) {
+                Optional<BlockState> waxed = getWaxedVersion(state);
+                if (waxed.isPresent()) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, waxed.get(), 11);
+                        if (!player.getAbilities().instabuild) {
+                            stack.shrink(1);
+                        }
+                        level.playSound(null, pos, SoundEvents.HONEYCOMB_WAX_ON, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    } else {
+                        level.levelEvent(3003, pos, 0);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
+            if (stack.getItem() instanceof AxeItem) {
+                Optional<BlockState> dewaxed = getDewaxedVersion(state);
+                if (dewaxed.isPresent()) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, dewaxed.get(), 11);
+                        level.playSound(null, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
+                    } else {
+                        level.levelEvent(3004, pos, 0);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+
+                Optional<BlockState> scraped = WeatheringCopper.getPrevious(state.getBlock())
+                        .map(block -> block.withPropertiesOf(state));
+                if (scraped.isPresent()) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, scraped.get(), 11);
+                        level.playSound(null, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
+                    } else {
+                        level.levelEvent(3005, pos, 0);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
+            return InteractionResult.PASS;
+        }
+
+        private Optional<BlockState> getWaxedVersion(BlockState state) {
+            Block block = state.getBlock();
+
+            if (block == COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == EXPOSED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_EXPOSED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WEATHERED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_WEATHERED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == OXIDIZED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WAXED_OXIDIZED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            }
+
+            else if (block == COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == EXPOSED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_EXPOSED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WEATHERED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_WEATHERED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == OXIDIZED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WAXED_OXIDIZED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            }
+
+            return Optional.empty();
+        }
+
+        private Optional<BlockState> getDewaxedVersion(BlockState state) {
+            Block block = state.getBlock();
+
+            if (block == WAXED_COPPER_SLAB.slab().get()) {
+                return Optional.of(COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_EXPOSED_COPPER_SLAB.slab().get()) {
+                return Optional.of(EXPOSED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_WEATHERED_COPPER_SLAB.slab().get()) {
+                return Optional.of(WEATHERED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_OXIDIZED_COPPER_SLAB.slab().get()) {
+                return Optional.of(OXIDIZED_COPPER_SLAB.slab().get().withPropertiesOf(state));
+            }
+
+            else if (block == WAXED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_EXPOSED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(EXPOSED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_WEATHERED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(WEATHERED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            } else if (block == WAXED_OXIDIZED_COPPER_BULB_SLAB.slab().get()) {
+                return Optional.of(OXIDIZED_COPPER_BULB_SLAB.slab().get().withPropertiesOf(state));
+            }
+
+            return Optional.empty();
+        }
+
+    }
+
+    private static WeatheringCopper.WeatherState getWeatherStateFromBlock(Block baseBlock) {
+        if (baseBlock == Blocks.COPPER_BLOCK || baseBlock == Blocks.WAXED_COPPER_BLOCK) {
+            return WeatheringCopper.WeatherState.UNAFFECTED;
+        } else if (baseBlock == Blocks.EXPOSED_COPPER || baseBlock == Blocks.WAXED_EXPOSED_COPPER) {
+            return WeatheringCopper.WeatherState.EXPOSED;
+        } else if (baseBlock == Blocks.WEATHERED_COPPER || baseBlock == Blocks.WAXED_WEATHERED_COPPER) {
+            return WeatheringCopper.WeatherState.WEATHERED;
+        } else if (baseBlock == Blocks.OXIDIZED_COPPER || baseBlock == Blocks.WAXED_OXIDIZED_COPPER) {
+            return WeatheringCopper.WeatherState.OXIDIZED;
+        }
+
+        else if (baseBlock == Blocks.COPPER_BULB || baseBlock == Blocks.WAXED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.UNAFFECTED;
+        } else if (baseBlock == Blocks.EXPOSED_COPPER_BULB || baseBlock == Blocks.WAXED_EXPOSED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.EXPOSED;
+        } else if (baseBlock == Blocks.WEATHERED_COPPER_BULB || baseBlock == Blocks.WAXED_WEATHERED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.WEATHERED;
+        } else if (baseBlock == Blocks.OXIDIZED_COPPER_BULB || baseBlock == Blocks.WAXED_OXIDIZED_COPPER_BULB) {
+            return WeatheringCopper.WeatherState.OXIDIZED;
+        }
+
+        return WeatheringCopper.WeatherState.UNAFFECTED;
     }
 
     private static ResourceKey<Block> blockId(String name) {
