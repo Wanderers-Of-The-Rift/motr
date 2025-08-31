@@ -292,7 +292,7 @@ public class MotrModelProvider extends ModelProvider {
         TextureMapping cubeMapping = new TextureMapping().put(TextureSlot.ALL, texture);
 
         ResourceLocation bottom = ExtendedModelTemplateBuilder.builder()
-                .parent(MaterialsOfTheRift.id("block/texture_slab_bottom"))
+                .parent(MaterialsOfTheRift.id("block/glass_texture_slab_bottom"))
                 .requiredTextureSlot(TextureSlot.BOTTOM)
                 .requiredTextureSlot(TextureSlot.TOP)
                 .requiredTextureSlot(TextureSlot.SIDE)
@@ -301,7 +301,7 @@ public class MotrModelProvider extends ModelProvider {
                 .create(slab, slabMapping, blockModels.modelOutput);
 
         ResourceLocation top = ExtendedModelTemplateBuilder.builder()
-                .parent(MaterialsOfTheRift.id("block/texture_slab_top"))
+                .parent(MaterialsOfTheRift.id("block/glass_texture_slab_top"))
                 .suffix("_top")
                 .requiredTextureSlot(TextureSlot.BOTTOM)
                 .requiredTextureSlot(TextureSlot.TOP)

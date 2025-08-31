@@ -2,6 +2,8 @@ package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +36,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -171,6 +174,54 @@ public class MotrBlocks {
         public Item getBaseItem() {
             return baseBlock.asItem();
         }
+    }
+
+    public static class GlassSlabBlock extends SlabBlock {
+        public GlassSlabBlock(BlockBehaviour.Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public boolean skipRendering(BlockState state, BlockState adjacentState, Direction side) {
+            if (adjacentState.getBlock() == this) {
+                SlabType type = state.getValue(TYPE);
+                SlabType adjType = adjacentState.getValue(TYPE);
+
+                if (type == SlabType.DOUBLE && adjType == SlabType.DOUBLE) {
+                    return true;
+                }
+
+                if ((type == SlabType.BOTTOM && adjType == SlabType.BOTTOM)
+                        || (type == SlabType.TOP && adjType == SlabType.TOP)) {
+                    return true;
+                }
+
+            }
+            return super.skipRendering(state, adjacentState, side);
+        }
+    }
+
+    public static class TintedGlassSlabBlock extends SlabBlock {
+        public TintedGlassSlabBlock(BlockBehaviour.Properties props) {
+            super(props);
+        }
+
+        @Override
+        public boolean skipRendering(BlockState state, BlockState adjacent, Direction side) {
+            if (adjacent.getBlock() == this) {
+                SlabType a = state.getValue(TYPE);
+                SlabType b = adjacent.getValue(TYPE);
+
+                if ((a == SlabType.DOUBLE && b == SlabType.DOUBLE) || (a == SlabType.TOP && b == SlabType.TOP)
+                        || (a == SlabType.BOTTOM && b == SlabType.BOTTOM)) {
+                    return true;
+                }
+
+                // need to add something that blocks light from passing through this block
+            }
+            return super.skipRendering(state, adjacent, side);
+        }
+
     }
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
@@ -1041,6 +1092,17 @@ public class MotrBlocks {
 
             if (baseBlock == Blocks.MAGMA_BLOCK) {
                 return new MagmaSlabBlock(properties);
+            }
+
+            String path = BuiltInRegistries.BLOCK.getKey(baseBlock).getPath();
+
+            if ("tinted_glass".equals(path)) {
+                return new TintedGlassSlabBlock(
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.TINTED_GLASS).setId(blockId(id)));
+            }
+
+            if (path.contains("glass")) {
+                return new GlassSlabBlock(properties.noOcclusion());
             }
 
             return new SlabBlock(properties);
