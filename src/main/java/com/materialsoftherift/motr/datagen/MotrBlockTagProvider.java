@@ -178,6 +178,13 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(getAllCopperBlocks());
 
+        tag(BlockTags.SAND)
+                .add(MotrBlocks.NOGRAV_SAND.block().get())
+                .add(MotrBlocks.NOGRAV_RED_SAND.block().get());
+
+        tag(BlockTags.BAMBOO_PLANTABLE_ON)
+                .add(MotrBlocks.NOGRAV_GRAVEL.block().get());
+
         // spotless:on
 
     }
