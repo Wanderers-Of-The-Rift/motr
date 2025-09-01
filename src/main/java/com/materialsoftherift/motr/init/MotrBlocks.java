@@ -176,9 +176,7 @@ public class MotrBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
 
     public static final DeferredBlock<Block> MOTR = registerDevBlock("motr",
-            () -> new Block(BlockBehaviour.Properties.of()
-                    .setId(blockId("motr"))
-            ));
+            () -> new Block(BlockBehaviour.Properties.of().setId(blockId("motr"))));
 
     public static final NoGravInfo NOGRAV_GRAVEL = registerNoGravBlock("nograv_gravel", Blocks.GRAVEL);
     public static final NoGravInfo NOGRAV_SAND = registerNoGravBlock("nograv_sand", Blocks.SAND);
