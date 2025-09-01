@@ -47,7 +47,7 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addStairTranslations(MotrBlocks.REGISTERED_STANDARD_STAIRS);
 
-        add("itemGroup." + MaterialsOfTheRift.MODID, "MOTR");
+        add("itemGroup." + MaterialsOfTheRift.MODID, "MotR");
 
         addBlock(MotrBlocks.HAY_CARPET, "Hay Carpet");
 

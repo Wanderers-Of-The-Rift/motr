@@ -19,10 +19,11 @@ public class MotrCreativeTabs {
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.motr"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> new ItemStack(Blocks.BAMBOO_MOSAIC_SLAB))
+                    .icon(() -> new ItemStack(MotrBlocks.MOTR.get()))
                     .displayItems((parameters, output) -> {
-                        MotrBlocks.BLOCKS.getEntries().forEach(block -> {
-                            output.accept(block.get().asItem());
+                        // Changed to omit 'dev blocks'
+                        MotrItems.BLOCK_ITEMS.forEach(blockItem -> {
+                            output.accept(blockItem.get());
                         });
                     })
                     .build());
