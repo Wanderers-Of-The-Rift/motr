@@ -49,6 +49,8 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 );
 
         dropSelf(MotrBlocks.HAY_CARPET.get());
+
+        dropSelf(MotrBlocks.MOTR.get());
     }
 
     @Override

@@ -56,6 +56,8 @@ public class MotrModelProvider extends ModelProvider {
                 mapping -> mapping.put(TextureSlot.WOOL, ResourceLocation.withDefaultNamespace("block/hay_block_top"))
         ));
 
+        blockModels.createTrivialCube(MotrBlocks.MOTR.get());
+
         MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((textureName, slabInfo) -> {
             registerStandardSlabModel(blockModels, slabInfo.slab().get(), textureName);
         });
