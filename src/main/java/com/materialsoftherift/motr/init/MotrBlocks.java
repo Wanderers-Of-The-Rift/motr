@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -222,6 +223,20 @@ public class MotrBlocks {
             return super.skipRendering(state, adjacent, side);
         }
 
+    }
+
+    public static class GlassWallBlock extends WallBlock {
+        public GlassWallBlock(BlockBehaviour.Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public boolean skipRendering(BlockState state, BlockState adjacentState, Direction side) {
+            if (adjacentState.getBlock() == this) {
+                return true;
+            }
+            return super.skipRendering(state, adjacentState, side);
+        }
     }
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
@@ -542,39 +557,56 @@ public class MotrBlocks {
     public static final WallInfo TUBE_CORAL_BLOCK_WALL = registerWallBlock("tube_coral_block_wall",
             Blocks.TUBE_CORAL_BLOCK);
 
-    public static final WallInfo GLASS_WALL = registerWallBlock("glass_wall", Blocks.GLASS);
-    public static final WallInfo TINTED_GLASS_WALL = registerWallBlock("tinted_glass_wall", Blocks.TINTED_GLASS);
-    public static final WallInfo WHITE_STAINED_GLASS_WALL = registerWallBlock("white_stained_glass_wall",
+    public static final WallInfo GLASS_WALL = registerGlassWallBlock("glass_wall", Blocks.GLASS);
+
+    public static final WallInfo TINTED_GLASS_WALL = registerGlassWallBlock("tinted_glass_wall", Blocks.TINTED_GLASS);
+
+    public static final WallInfo WHITE_STAINED_GLASS_WALL = registerGlassWallBlock("white_stained_glass_wall",
             Blocks.WHITE_STAINED_GLASS);
-    public static final WallInfo LIGHT_GRAY_STAINED_GLASS_WALL = registerWallBlock("light_gray_stained_glass_wall",
+
+    public static final WallInfo LIGHT_GRAY_STAINED_GLASS_WALL = registerGlassWallBlock("light_gray_stained_glass_wall",
             Blocks.LIGHT_GRAY_STAINED_GLASS);
-    public static final WallInfo GRAY_STAINED_GLASS_WALL = registerWallBlock("gray_stained_glass_wall",
+
+    public static final WallInfo GRAY_STAINED_GLASS_WALL = registerGlassWallBlock("gray_stained_glass_wall",
             Blocks.GRAY_STAINED_GLASS);
-    public static final WallInfo BLACK_STAINED_GLASS_WALL = registerWallBlock("black_stained_glass_wall",
+
+    public static final WallInfo BLACK_STAINED_GLASS_WALL = registerGlassWallBlock("black_stained_glass_wall",
             Blocks.BLACK_STAINED_GLASS);
-    public static final WallInfo BROWN_STAINED_GLASS_WALL = registerWallBlock("brown_stained_glass_wall",
+
+    public static final WallInfo BROWN_STAINED_GLASS_WALL = registerGlassWallBlock("brown_stained_glass_wall",
             Blocks.BROWN_STAINED_GLASS);
-    public static final WallInfo RED_STAINED_GLASS_WALL = registerWallBlock("red_stained_glass_wall",
+
+    public static final WallInfo RED_STAINED_GLASS_WALL = registerGlassWallBlock("red_stained_glass_wall",
             Blocks.RED_STAINED_GLASS);
-    public static final WallInfo ORANGE_STAINED_GLASS_WALL = registerWallBlock("orange_stained_glass_wall",
+
+    public static final WallInfo ORANGE_STAINED_GLASS_WALL = registerGlassWallBlock("orange_stained_glass_wall",
             Blocks.ORANGE_STAINED_GLASS);
-    public static final WallInfo YELLOW_STAINED_GLASS_WALL = registerWallBlock("yellow_stained_glass_wall",
+
+    public static final WallInfo YELLOW_STAINED_GLASS_WALL = registerGlassWallBlock("yellow_stained_glass_wall",
             Blocks.YELLOW_STAINED_GLASS);
-    public static final WallInfo LIME_STAINED_GLASS_WALL = registerWallBlock("lime_stained_glass_wall",
+
+    public static final WallInfo LIME_STAINED_GLASS_WALL = registerGlassWallBlock("lime_stained_glass_wall",
             Blocks.LIME_STAINED_GLASS);
-    public static final WallInfo GREEN_STAINED_GLASS_WALL = registerWallBlock("green_stained_glass_wall",
+
+    public static final WallInfo GREEN_STAINED_GLASS_WALL = registerGlassWallBlock("green_stained_glass_wall",
             Blocks.GREEN_STAINED_GLASS);
-    public static final WallInfo CYAN_STAINED_GLASS_WALL = registerWallBlock("cyan_stained_glass_wall",
+
+    public static final WallInfo CYAN_STAINED_GLASS_WALL = registerGlassWallBlock("cyan_stained_glass_wall",
             Blocks.CYAN_STAINED_GLASS);
-    public static final WallInfo LIGHT_BLUE_STAINED_GLASS_WALL = registerWallBlock("light_blue_stained_glass_wall",
+
+    public static final WallInfo LIGHT_BLUE_STAINED_GLASS_WALL = registerGlassWallBlock("light_blue_stained_glass_wall",
             Blocks.LIGHT_BLUE_STAINED_GLASS);
-    public static final WallInfo BLUE_STAINED_GLASS_WALL = registerWallBlock("blue_stained_glass_wall",
+
+    public static final WallInfo BLUE_STAINED_GLASS_WALL = registerGlassWallBlock("blue_stained_glass_wall",
             Blocks.BLUE_STAINED_GLASS);
-    public static final WallInfo PURPLE_STAINED_GLASS_WALL = registerWallBlock("purple_stained_glass_wall",
+
+    public static final WallInfo PURPLE_STAINED_GLASS_WALL = registerGlassWallBlock("purple_stained_glass_wall",
             Blocks.PURPLE_STAINED_GLASS);
-    public static final WallInfo MAGENTA_STAINED_GLASS_WALL = registerWallBlock("magenta_stained_glass_wall",
+
+    public static final WallInfo MAGENTA_STAINED_GLASS_WALL = registerGlassWallBlock("magenta_stained_glass_wall",
             Blocks.MAGENTA_STAINED_GLASS);
-    public static final WallInfo PINK_STAINED_GLASS_WALL = registerWallBlock("pink_stained_glass_wall",
+
+    public static final WallInfo PINK_STAINED_GLASS_WALL = registerGlassWallBlock("pink_stained_glass_wall",
             Blocks.PINK_STAINED_GLASS);
 
     public static final Map<String, WallInfo> REGISTERED_STANDARD_WALLS = Map.ofEntries(
@@ -1114,6 +1146,13 @@ public class MotrBlocks {
     private static WallInfo registerWallBlock(String id, Block baseBlock) {
         DeferredBlock<?> wall = registerBlock(id, () -> new net.minecraft.world.level.block.WallBlock(
                 BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id))));
+        return new WallInfo(wall, baseBlock);
+    }
+
+    private static WallInfo registerGlassWallBlock(String id, Block baseBlock) {
+        DeferredBlock<?> wall = registerBlock(id, () -> new GlassWallBlock(
+                BlockBehaviour.Properties.ofFullCopy(baseBlock).noOcclusion().setId(blockId(id))
+        ));
         return new WallInfo(wall, baseBlock);
     }
 
