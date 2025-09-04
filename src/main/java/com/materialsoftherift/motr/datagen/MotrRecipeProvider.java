@@ -1,6 +1,7 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.NoGravMotr;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -28,7 +29,7 @@ public class MotrRecipeProvider extends RecipeProvider {
     protected void buildRecipes() {
         HolderGetter<Item> getter = this.registries.lookupOrThrow(Registries.ITEM);
 
-        MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((id, noGravInfo) -> {
+        NoGravMotr.REGISTERED_NOGRAV_BLOCKS.forEach((id, noGravInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, noGravInfo.block().get(), 8)
                     .pattern("GGG")
                     .pattern("GHG")

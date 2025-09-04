@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.NoGravMotr;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
@@ -27,7 +28,7 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         // Adds a block translation.
 
-        addNoGravTranslations(MotrBlocks.REGISTERED_NOGRAV_BLOCKS);
+        addNoGravTranslations(NoGravMotr.REGISTERED_NOGRAV_BLOCKS);
 
         addWallTranslations(MotrBlocks.REGISTERED_STANDARD_WALLS);
         addWallTranslations(MotrBlocks.REGISTERED_GLASS_WALLS);
@@ -68,7 +69,7 @@ public class MotrLanguageProvider extends LanguageProvider {
         return sb.toString().trim();
     }
 
-    private void addNoGravTranslations(Map<String, MotrBlocks.NoGravInfo> noGravMap) {
+    private void addNoGravTranslations(Map<String, NoGravMotr.NoGravInfo> noGravMap) {
         noGravMap.forEach((baseName, noGravInfo) -> {
             String translation = "No Grav " + snakeCaseToCapitalizedCase(baseName);
             addBlock(noGravInfo.block(), translation);

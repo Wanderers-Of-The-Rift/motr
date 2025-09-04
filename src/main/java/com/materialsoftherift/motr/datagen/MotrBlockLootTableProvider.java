@@ -1,6 +1,7 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.NoGravMotr;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -18,7 +19,7 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
 
-        MotrBlocks.REGISTERED_NOGRAV_BLOCKS.values().forEach(noGravInfo -> dropSelf(noGravInfo.block().get()));
+        NoGravMotr.REGISTERED_NOGRAV_BLOCKS.values().forEach(noGravInfo -> dropSelf(noGravInfo.block().get()));
 
         MotrBlocks.REGISTERED_STANDARD_SLABS.values()
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSlabItemTable(slabInfo.slab().get())));
@@ -55,7 +56,10 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return MotrBlocks.BLOCKS.getEntries().stream().map(Holder::value)::iterator;
+        return java.util.stream.Stream.concat(
+                MotrBlocks.BLOCKS.getEntries().stream().map(Holder::value),
+                NoGravMotr.BLOCKS.getEntries().stream().map(Holder::value)
+        )::iterator;
     }
 
 }

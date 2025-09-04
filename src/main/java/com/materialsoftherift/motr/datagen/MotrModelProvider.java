@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.NoGravMotr;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -48,7 +49,7 @@ public class MotrModelProvider extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
 
-        MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
+        NoGravMotr.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
             registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
 
@@ -176,17 +177,16 @@ public class MotrModelProvider extends ModelProvider {
     private void registerNoGravModel(
             BlockModelGenerators blockModels,
             ItemModelGenerators itemModels,
-            MotrBlocks.NoGravInfo info,
+            NoGravMotr.NoGravInfo info,
             String textureName) {
         var block = info.block().get();
-        var item = block.asItem();
 
         ResourceLocation blockTex = ResourceLocation.withDefaultNamespace("block/" + textureName);
         ResourceLocation blockModel = ModelLocationUtils.getModelLocation(block);
         ModelTemplates.CUBE_ALL.create(blockModel, TextureMapping.cube(blockTex), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, blockModel));
 
-        ResourceLocation itemModel = ModelLocationUtils.getModelLocation(item);
+        ResourceLocation itemModel = ModelLocationUtils.getModelLocation(block);
         ResourceLocation baseId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
                 itemModel.getPath() + "_base");
         ResourceLocation overlayId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
@@ -226,14 +226,13 @@ public class MotrModelProvider extends ModelProvider {
         );
 
         itemModels.itemModelOutput.accept(
-                item, new CompositeModel.Unbaked(
+                block.asItem(), new CompositeModel.Unbaked(
                         java.util.List.of(
                                 new BlockModelWrapper.Unbaked(overlayId, java.util.Collections.emptyList()),
                                 new BlockModelWrapper.Unbaked(baseId, java.util.Collections.emptyList())
                         )
                 )
         );
-
     }
 
     private void registerStandardSlabModel(BlockModelGenerators blockModels, Block slab, String textureName) {

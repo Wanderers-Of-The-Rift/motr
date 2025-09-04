@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.NoGravMotr;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -179,18 +180,18 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(getAllCopperBlocks());
 
         tag(BlockTags.SAND)
-                .add(MotrBlocks.NOGRAV_SAND.block().get())
-                .add(MotrBlocks.NOGRAV_RED_SAND.block().get());
+                .add(NoGravMotr.NOGRAV_SAND.block().get())
+                .add(NoGravMotr.NOGRAV_RED_SAND.block().get());
 
         tag(BlockTags.BAMBOO_PLANTABLE_ON)
-                .add(MotrBlocks.NOGRAV_GRAVEL.block().get());
+                .add(NoGravMotr.NOGRAV_GRAVEL.block().get());
 
         // spotless:on
 
     }
 
     private Block[] getAllNoGravBlocks() {
-        return MotrBlocks.REGISTERED_NOGRAV_BLOCKS.values()
+        return NoGravMotr.REGISTERED_NOGRAV_BLOCKS.values()
                 .stream()
                 .map(nogravInfo -> nogravInfo.block().get())
                 .toArray(Block[]::new);

@@ -4,6 +4,7 @@ import com.materialsoftherift.motr.init.MotrBlockEntities;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrCreativeTabs;
 import com.materialsoftherift.motr.init.MotrItems;
+import com.materialsoftherift.motr.init.NoGravMotr;
 import com.materialsoftherift.motr.init.recipe.MotrRecipeCategories;
 import com.materialsoftherift.motr.init.recipe.MotrRecipeDisplayTypes;
 import com.materialsoftherift.motr.init.recipe.MotrRecipeSerializers;
@@ -38,6 +39,9 @@ public class MaterialsOfTheRift {
         MotrRecipeCategories.RECIPE_BOOK_CATEGORIES.register(modEventBus);
         MotrSlotDisplayTypes.SLOT_DISPLAY_TYPES.register(modEventBus);
         MotrRecipeDisplayTypes.RECIPE_DISPLAY_TYPES.register(modEventBus);
+
+        // Block variants
+        NoGravMotr.BLOCKS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
