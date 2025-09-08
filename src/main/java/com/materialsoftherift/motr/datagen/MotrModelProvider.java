@@ -263,23 +263,23 @@ public class MotrModelProvider extends ModelProvider {
     private void createOverlay(ItemModelGenerators itemModels, ResourceLocation overlayTex) {
 
         String overlayGuiOnlyJson = """
-{
-  "parent": "minecraft:item/generated",
-  "textures": { "layer0": "%s" },
-  "display": {
-    "gui": {
-      "translation": [0, 0, 6],
-      "scale": [1, 1, 1]
-    },
-    "thirdperson_righthand": { "scale": [0, 0, 0] },
-    "thirdperson_lefthand":  { "scale": [0, 0, 0] },
-    "firstperson_righthand": { "scale": [0, 0, 0] },
-    "firstperson_lefthand":  { "scale": [0, 0, 0] },
-    "ground":                { "scale": [0, 0, 0] },
-    "fixed":                 { "scale": [0, 0, 0] }
-  }
-}
-""".formatted(overlayTex);
+                {
+                  "parent": "minecraft:item/generated",
+                  "textures": { "layer0": "%s" },
+                  "display": {
+                    "gui": {
+                      "translation": [0, 0, 6],
+                      "scale": [1, 1, 1]
+                    },
+                    "thirdperson_righthand": { "scale": [0, 0, 0] },
+                    "thirdperson_lefthand":  { "scale": [0, 0, 0] },
+                    "firstperson_righthand": { "scale": [0, 0, 0] },
+                    "firstperson_lefthand":  { "scale": [0, 0, 0] },
+                    "ground":                { "scale": [0, 0, 0] },
+                    "fixed":                 { "scale": [0, 0, 0] }
+                  }
+                }
+                """.formatted(overlayTex);
 
         itemModels.modelOutput.accept(
                 overlayTex.withSuffix("_overlay"),
