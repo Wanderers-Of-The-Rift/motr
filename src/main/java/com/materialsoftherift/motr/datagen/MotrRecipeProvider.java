@@ -1,7 +1,8 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
-import com.materialsoftherift.motr.init.NoGravMotr;
+import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrSlabs;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -29,7 +30,7 @@ public class MotrRecipeProvider extends RecipeProvider {
     protected void buildRecipes() {
         HolderGetter<Item> getter = this.registries.lookupOrThrow(Registries.ITEM);
 
-        NoGravMotr.REGISTERED_NOGRAV_BLOCKS.forEach((id, noGravInfo) -> {
+        MotrNoGrav.REGISTERED_NOGRAV_BLOCKS.forEach((id, noGravInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, noGravInfo.block().get(), 8)
                     .pattern("GGG")
                     .pattern("GHG")
@@ -41,7 +42,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
@@ -49,7 +50,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_GLASS_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_GLASS_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
@@ -57,7 +58,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
@@ -65,7 +66,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_TRIMM_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_TRIMM_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
@@ -73,7 +74,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_SILKTOUCH_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_SILKTOUCH_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
@@ -81,7 +82,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
@@ -145,9 +146,9 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_WAXED_COPPER_SLABS.forEach((id, waxedSlabInfo) -> {
+        MotrSlabs.REGISTERED_WAXED_COPPER_SLABS.forEach((id, waxedSlabInfo) -> {
             String nonWaxedId = id.replace("waxed_", "");
-            MotrBlocks.SlabInfo nonWaxedSlabInfo = MotrBlocks.REGISTERED_COPPER_SLABS.get(nonWaxedId);
+            MotrSlabs.SlabInfo nonWaxedSlabInfo = MotrSlabs.REGISTERED_COPPER_SLABS.get(nonWaxedId);
 
             if (nonWaxedSlabInfo != null) {
                 ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.BUILDING_BLOCKS, waxedSlabInfo.slab().get())

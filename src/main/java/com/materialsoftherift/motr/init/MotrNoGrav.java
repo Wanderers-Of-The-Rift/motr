@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static com.materialsoftherift.motr.init.MotrBlocks.blockId;
 
-public class NoGravMotr {
+public class MotrNoGrav {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
 

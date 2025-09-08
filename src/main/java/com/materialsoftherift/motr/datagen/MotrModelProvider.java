@@ -2,7 +2,8 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
-import com.materialsoftherift.motr.init.NoGravMotr;
+import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrSlabs;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -49,7 +50,7 @@ public class MotrModelProvider extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
 
-        NoGravMotr.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
+        MotrNoGrav.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
             registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
 
@@ -59,15 +60,15 @@ public class MotrModelProvider extends ModelProvider {
 
         blockModels.createTrivialCube(MotrBlocks.MOTR.get());
 
-        MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((textureName, slabInfo) -> {
+        MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((textureName, slabInfo) -> {
             registerStandardSlabModel(blockModels, slabInfo.slab().get(), textureName);
         });
 
-        MotrBlocks.REGISTERED_GLASS_SLABS.forEach((textureId, slabInfo) -> {
+        MotrSlabs.REGISTERED_GLASS_SLABS.forEach((textureId, slabInfo) -> {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
-        MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
             if (id.contains("bulb")) {
                 String baseTextureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
 
@@ -86,15 +87,15 @@ public class MotrModelProvider extends ModelProvider {
             }
         });
 
-        MotrBlocks.REGISTERED_SILKTOUCH_SLABS.forEach((textureId, slabInfo) -> {
+        MotrSlabs.REGISTERED_SILKTOUCH_SLABS.forEach((textureId, slabInfo) -> {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
-        MotrBlocks.REGISTERED_TRIMM_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_TRIMM_SLABS.forEach((id, slabInfo) -> {
             registerTrimmSlabModel(blockModels, slabInfo.slab().get(), id, id, id);
         });
 
-        MotrBlocks.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
             {
                 String side = id;
                 String top = id;
@@ -177,7 +178,7 @@ public class MotrModelProvider extends ModelProvider {
     private void registerNoGravModel(
             BlockModelGenerators blockModels,
             ItemModelGenerators itemModels,
-            NoGravMotr.NoGravInfo info,
+            MotrNoGrav.NoGravInfo info,
             String textureName) {
         var block = info.block().get();
 
