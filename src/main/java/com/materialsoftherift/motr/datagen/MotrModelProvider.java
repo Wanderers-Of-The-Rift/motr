@@ -22,7 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.CoralFanBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -64,30 +63,25 @@ public class MotrModelProvider extends ModelProvider {
 
         MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach(
                 (texture, blockInfo) -> {
-                    if (blockInfo.baseBlock() instanceof BubbleColumnBlock) {
-                        ResourceLocation itemTexture = ResourceLocation.withDefaultNamespace("item/barrier");
-                        itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
-                                ItemModelUtils.plainModel(itemTexture));
-                        blockModels.createParticleOnlyBlock(blockInfo.block().get(), Blocks.WATER);
-                        return;
-                    }
                     if (blockInfo.baseBlock() instanceof CoralFanBlock) {
                         TexturedModel texturedmodel = TexturedModel.CORAL_FAN.get(blockInfo.baseBlock());
                         ResourceLocation resourcelocation = texturedmodel.create(blockInfo.baseBlock(),
                                 blockModels.modelOutput);
+
                         blockModels.blockStateOutput.accept(
                                 BlockModelGenerators.createSimpleBlock(blockInfo.block().get(), resourcelocation));
 
+                        // Apply dot overlay
                         ResourceLocation defaultModel = ModelLocationUtils
                                 .getModelLocation(blockInfo.baseBlock().asItem());
-                        itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
-                                ItemModelUtils.plainModel(defaultModel));
+                        addWithOverlay(blockInfo.block().asItem(), defaultModel, DOT_TEXTURE, itemModels);
                         return;
                     }
                     if (blockInfo.baseBlock() instanceof SeaPickleBlock) {
-                        ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
-                        itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
-                                ItemModelUtils.plainModel(defaultModel));
+                        // Apply dot overlay
+                        addWithOverlay(blockInfo.block().asItem(),
+                                ModelLocationUtils.getModelLocation(blockInfo.baseBlock()), DOT_TEXTURE, itemModels);
+
                         blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(blockInfo.block().get())
                                 .with(PropertyDispatch.property(SeaPickleBlock.PICKLES)
                                         .select(1, List.of(BlockModelGenerators.createRotatedVariants(
@@ -105,6 +99,7 @@ public class MotrModelProvider extends ModelProvider {
                         );
                         return;
                     }
+                    // Apply dot overlay
                     addWithOverlay(blockInfo.block().asItem(),
                             ModelLocationUtils.getModelLocation(blockInfo.baseBlock()), DOT_TEXTURE, itemModels);
 
