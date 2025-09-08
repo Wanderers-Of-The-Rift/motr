@@ -44,7 +44,6 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
         MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach((id, blockInfo) -> {
             ItemLike quenchedBlock = blockInfo.block().get();
             ItemLike vanillaBlock = blockInfo.getBaseItem();
@@ -73,7 +72,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output, id + "_from_quenched");
         });
 
-        MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())

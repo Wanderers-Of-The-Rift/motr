@@ -34,8 +34,6 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addQuenchedBlockTranslations(MotrBlocks.REGISTERED_QUENCHED_BLOCKS);
 
-        addWallTranslations(MotrBlocks.REGISTERED_STANDARD_WALLS);
-        addWallTranslations(MotrBlocks.REGISTERED_GLASS_WALLS);
         addWallTranslations(MotrWalls.REGISTERED_STANDARD_WALLS);
         addWallTranslations(MotrWalls.REGISTERED_GLASS_WALLS);
 

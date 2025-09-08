@@ -58,6 +58,7 @@ public class MotrModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
+
         createOverlay(itemModels, DOT_TEXTURE);
 
         MotrNoGrav.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
@@ -238,52 +239,53 @@ public class MotrModelProvider extends ModelProvider {
             MotrNoGrav.NoGravInfo info,
             String textureName) {
         var block = info.block().get();
-
+        var item = block.asItem();
         ResourceLocation blockTex = ResourceLocation.withDefaultNamespace("block/" + textureName);
         ResourceLocation blockModel = ModelLocationUtils.getModelLocation(block);
         ModelTemplates.CUBE_ALL.create(blockModel, TextureMapping.cube(blockTex), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, blockModel));
-
-        ResourceLocation itemModel = ModelLocationUtils.getModelLocation(block);
+        ResourceLocation itemModel = ModelLocationUtils.getModelLocation(item);
         ResourceLocation baseId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
                 itemModel.getPath() + "_base");
-
         String base3dJson = """
                 {
                   "parent": "%s"
+
                 }
                 """.formatted(blockModel);
         itemModels.modelOutput.accept(
                 baseId, () -> com.google.gson.JsonParser.parseString(base3dJson).getAsJsonObject()
         );
-
         addWithOverlay(item, baseId, DOT_TEXTURE, itemModels);
+
     }
 
     private void createOverlay(ItemModelGenerators itemModels, ResourceLocation overlayTex) {
+
         String overlayGuiOnlyJson = """
-                {
-                  "parent": "minecraft:item/generated",
-                  "textures": { "layer0": "%s" },
-                  "display": {
-                    "gui": {
-                      "translation": [0, 0, 6],
-                      "scale": [1, 1, 1]
-                    },
-                    "thirdperson_righthand": { "scale": [0,0,0] },
-                    "thirdperson_lefthand":  { "scale": [0,0,0] },
-                    "firstperson_righthand": { "scale": [0,0,0] },
-                    "firstperson_lefthand":  { "scale": [0,0,0] },
-                    "ground":                { "scale": [0,0,0] },
-                    "fixed":                 { "scale": [0,0,0] }
-                  }
-                }
-                """.formatted(overlayTex);
+{
+  "parent": "minecraft:item/generated",
+  "textures": { "layer0": "%s" },
+  "display": {
+    "gui": {
+      "translation": [0, 0, 6],
+      "scale": [1, 1, 1]
+    },
+    "thirdperson_righthand": { "scale": [0, 0, 0] },
+    "thirdperson_lefthand":  { "scale": [0, 0, 0] },
+    "firstperson_righthand": { "scale": [0, 0, 0] },
+    "firstperson_lefthand":  { "scale": [0, 0, 0] },
+    "ground":                { "scale": [0, 0, 0] },
+    "fixed":                 { "scale": [0, 0, 0] }
+  }
+}
+""".formatted(overlayTex);
 
         itemModels.modelOutput.accept(
                 overlayTex.withSuffix("_overlay"),
                 () -> com.google.gson.JsonParser.parseString(overlayGuiOnlyJson).getAsJsonObject()
         );
+
     }
 
     private void addWithOverlay(
@@ -292,7 +294,7 @@ public class MotrModelProvider extends ModelProvider {
             ResourceLocation overlay,
             ItemModelGenerators itemModels) {
         itemModels.itemModelOutput.accept(
-                block.asItem(), new CompositeModel.Unbaked(
+                item, new CompositeModel.Unbaked(
                         java.util.List.of(
                                 new BlockModelWrapper.Unbaked(overlay.withSuffix("_overlay"),
                                         java.util.Collections.emptyList()),

@@ -8,9 +8,6 @@ import com.materialsoftherift.motr.blocks.quenched.QuenchedKelpBlock;
 import com.materialsoftherift.motr.blocks.quenched.QuenchedSeaPickleBlock;
 import com.materialsoftherift.motr.blocks.quenched.QuenchedSeagrassBlock;
 import com.materialsoftherift.motr.blocks.quenched.QuenchedSugarCaneBlock;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -22,15 +19,9 @@ import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
-import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -41,27 +32,8 @@ import java.util.function.Supplier;
 public class MotrBlocks {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
 
     public record QuenchedBlockInfo(DeferredBlock<Block> block, Block baseBlock) {
-        public Item getBaseItem() {
-            return baseBlock.asItem();
-        }
-    }
-
-    public static class NoGravInfo {
-        private final DeferredBlock<Block> block;
-        private final Block baseBlock;
-
-        public NoGravInfo(DeferredBlock<Block> block, Block baseBlock) {
-            this.block = block;
-            this.baseBlock = baseBlock;
-        }
-
-        public DeferredBlock<Block> block() {
-            return block;
-        }
-
         public Item getBaseItem() {
             return baseBlock.asItem();
         }
@@ -149,43 +121,6 @@ public class MotrBlocks {
             Map.entry("fire_coral_fan", QUENCHED_FIRE_CORAL_FAN), Map.entry("horn_coral_fan", QUENCHED_HORN_CORAL_FAN),
             Map.entry("farmland", QUENCHED_FARMLAND), Map.entry("sugar_cane", QUENCHED_SUGAR_CANE)
     );
-
-    public static class SlabInfo {
-        private final DeferredBlock<SlabBlock> slab;
-        private final Block baseBlock;
-
-        public SlabInfo(DeferredBlock<SlabBlock> slab, Block baseBlock) {
-            this.slab = slab;
-            this.baseBlock = baseBlock;
-        }
-
-        public DeferredBlock<SlabBlock> slab() {
-            return slab;
-        }
-
-        public Item getBaseItem() {
-            return baseBlock.asItem();
-        }
-    }
-
-    public static class WallInfo {
-        private final DeferredBlock<?> wall;
-        private final Block baseBlock;
-
-        public WallInfo(DeferredBlock<?> wall, Block baseBlock) {
-            this.wall = wall;
-            this.baseBlock = baseBlock;
-        }
-
-        public DeferredBlock<?> wall() {
-            return wall;
-        }
-
-        public Item getBaseItem() {
-            return baseBlock.asItem();
-        }
-
-    }
 
     public static class ButtonInfo {
         private final DeferredBlock<ButtonBlock> button;
@@ -690,6 +625,16 @@ public class MotrBlocks {
         DeferredBlock<StairBlock> stair = registerDevBlock(id, () -> new StairBlock(baseBlock.defaultBlockState(),
                 BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id))));
         return new StairInfo(stair, baseBlock);
+    }
+
+    private static QuenchedBlockInfo registerQuenchedBlock(String id, Block baseBlock, Supplier<Block> blockSupplier) {
+
+        DeferredBlock<Block> block = BLOCKS.register(id, blockSupplier);
+
+        MotrItems.registerQuenchedBlockItem(id, block);
+
+        return new QuenchedBlockInfo(block, baseBlock);
+
     }
 
     private static DeferredBlock<CarpetBlock> registerCarpet(String id, Block baseBlock) {
