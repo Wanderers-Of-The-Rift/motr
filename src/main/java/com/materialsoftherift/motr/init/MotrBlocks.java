@@ -1,6 +1,16 @@
 package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedCoralBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedCoralFanBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedFarmlandBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedKelpBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedSeaPickleBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedSeagrassBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedSugarCaneBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -11,9 +21,16 @@ import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.SeaPickleBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -24,6 +41,151 @@ import java.util.function.Supplier;
 public class MotrBlocks {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
+
+    public record QuenchedBlockInfo(DeferredBlock<Block> block, Block baseBlock) {
+        public Item getBaseItem() {
+            return baseBlock.asItem();
+        }
+    }
+
+    public static class NoGravInfo {
+        private final DeferredBlock<Block> block;
+        private final Block baseBlock;
+
+        public NoGravInfo(DeferredBlock<Block> block, Block baseBlock) {
+            this.block = block;
+            this.baseBlock = baseBlock;
+        }
+
+        public DeferredBlock<Block> block() {
+            return block;
+        }
+
+        public Item getBaseItem() {
+            return baseBlock.asItem();
+        }
+    }
+
+    public static final QuenchedBlockInfo QUENCHED_KELP = registerQuenchedBlock("quenched_kelp", Blocks.KELP,
+            () -> new QuenchedKelpBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.KELP).setId(blockId("quenched_kelp"))));
+    public static final QuenchedBlockInfo QUENCHED_KELP_PLANT = registerQuenchedBlock("quenched_kelp_plant",
+            Blocks.KELP_PLANT, () -> new QuenchedKelpBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.KELP_PLANT).setId(blockId("quenched_kelp_plant"))));
+    public static final QuenchedBlockInfo QUENCHED_SEAGRASS = registerQuenchedBlock("quenched_seagrass",
+            Blocks.SEAGRASS, () -> new QuenchedSeagrassBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.SEAGRASS).setId(blockId("quenched_seagrass"))));
+    public static final QuenchedBlockInfo QUENCHED_SEA_PICKLE = registerQuenchedBlock("quenched_sea_pickle",
+            Blocks.SEA_PICKLE, () -> new QuenchedSeaPickleBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_PICKLE)
+                            .lightLevel(block -> 3 + 3 * block.getValue(SeaPickleBlock.PICKLES))
+                            .setId(blockId("quenched_sea_pickle"))));
+    public static final QuenchedBlockInfo QUENCHED_TUBE_CORAL = registerQuenchedBlock("quenched_tube_coral",
+            Blocks.TUBE_CORAL_BLOCK,
+            () -> new QuenchedCoralBlock(Blocks.DEAD_TUBE_CORAL_BLOCK,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.TUBE_CORAL_BLOCK)
+                            .setId(blockId("quenched_tube_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_BRAIN_CORAL = registerQuenchedBlock("quenched_brain_coral",
+            Blocks.BRAIN_CORAL_BLOCK,
+            () -> new QuenchedCoralBlock(Blocks.DEAD_BRAIN_CORAL_BLOCK,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BRAIN_CORAL_BLOCK)
+                            .setId(blockId("quenched_brain_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_BUBBLE_CORAL = registerQuenchedBlock("quenched_bubble_coral",
+            Blocks.BUBBLE_CORAL_BLOCK,
+            () -> new QuenchedCoralBlock(Blocks.DEAD_BUBBLE_CORAL_BLOCK,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BUBBLE_CORAL_BLOCK)
+                            .setId(blockId("quenched_bubble_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_FIRE_CORAL = registerQuenchedBlock("quenched_fire_coral",
+            Blocks.FIRE_CORAL_BLOCK,
+            () -> new QuenchedCoralBlock(Blocks.DEAD_FIRE_CORAL_BLOCK,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE_CORAL_BLOCK)
+                            .setId(blockId("quenched_fire_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_HORN_CORAL = registerQuenchedBlock("quenched_horn_coral",
+            Blocks.HORN_CORAL_BLOCK,
+            () -> new QuenchedCoralBlock(Blocks.DEAD_HORN_CORAL_BLOCK,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.HORN_CORAL_BLOCK)
+                            .setId(blockId("quenched_horn_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_TUBE_CORAL_FAN = registerQuenchedBlock("quenched_tube_coral_fan",
+            Blocks.TUBE_CORAL_FAN,
+            () -> new QuenchedCoralFanBlock(Blocks.TUBE_CORAL_FAN,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.TUBE_CORAL_FAN)
+                            .setId(blockId("quenched_tube_coral_fan"))));
+    public static final QuenchedBlockInfo QUENCHED_BRAIN_CORAL_FAN = registerQuenchedBlock("quenched_brain_coral_fan",
+            Blocks.BRAIN_CORAL_FAN,
+            () -> new QuenchedCoralFanBlock(Blocks.BRAIN_CORAL_FAN,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BRAIN_CORAL_FAN)
+                            .setId(blockId("quenched_brain_coral_fan"))));
+    public static final QuenchedBlockInfo QUENCHED_BUBBLE_CORAL_FAN = registerQuenchedBlock("quenched_bubble_coral_fan",
+            Blocks.BUBBLE_CORAL_FAN,
+            () -> new QuenchedCoralFanBlock(Blocks.BUBBLE_CORAL_FAN,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BUBBLE_CORAL_FAN)
+                            .setId(blockId("quenched_bubble_coral_fan"))));
+    public static final QuenchedBlockInfo QUENCHED_FIRE_CORAL_FAN = registerQuenchedBlock("quenched_fire_coral_fan",
+            Blocks.FIRE_CORAL_FAN,
+            () -> new QuenchedCoralFanBlock(Blocks.FIRE_CORAL_FAN,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE_CORAL_FAN)
+                            .setId(blockId("quenched_fire_coral_fan"))));
+    public static final QuenchedBlockInfo QUENCHED_HORN_CORAL_FAN = registerQuenchedBlock("quenched_horn_coral_fan",
+            Blocks.HORN_CORAL_FAN,
+            () -> new QuenchedCoralFanBlock(Blocks.HORN_CORAL_FAN,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.HORN_CORAL_FAN)
+                            .setId(blockId("quenched_horn_coral_fan"))));
+    public static final QuenchedBlockInfo QUENCHED_FARMLAND = registerQuenchedBlock("quenched_farmland",
+            Blocks.FARMLAND, () -> new QuenchedFarmlandBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.FARMLAND).setId(blockId("quenched_farmland"))));
+    public static final QuenchedBlockInfo QUENCHED_SUGAR_CANE = registerQuenchedBlock("quenched_sugar_cane",
+            Blocks.SUGAR_CANE, () -> new QuenchedSugarCaneBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.SUGAR_CANE).setId(blockId("quenched_sugar_cane"))));
+
+    public static final Map<String, QuenchedBlockInfo> REGISTERED_QUENCHED_BLOCKS = Map.ofEntries(
+            Map.entry("kelp", QUENCHED_KELP), Map.entry("seagrass", QUENCHED_SEAGRASS),
+            Map.entry("kelp_plant", QUENCHED_KELP_PLANT), Map.entry("sea_pickle", QUENCHED_SEA_PICKLE),
+            Map.entry("tube_coral", QUENCHED_TUBE_CORAL), Map.entry("brain_coral", QUENCHED_BRAIN_CORAL),
+            Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL), Map.entry("fire_coral", QUENCHED_FIRE_CORAL),
+            Map.entry("horn_coral", QUENCHED_HORN_CORAL), Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
+            Map.entry("brain_coral_fan", QUENCHED_BRAIN_CORAL_FAN),
+            Map.entry("bubble_coral_fan", QUENCHED_BUBBLE_CORAL_FAN),
+            Map.entry("fire_coral_fan", QUENCHED_FIRE_CORAL_FAN), Map.entry("horn_coral_fan", QUENCHED_HORN_CORAL_FAN),
+            Map.entry("farmland", QUENCHED_FARMLAND), Map.entry("sugar_cane", QUENCHED_SUGAR_CANE)
+    );
+
+    public static class SlabInfo {
+        private final DeferredBlock<SlabBlock> slab;
+        private final Block baseBlock;
+
+        public SlabInfo(DeferredBlock<SlabBlock> slab, Block baseBlock) {
+            this.slab = slab;
+            this.baseBlock = baseBlock;
+        }
+
+        public DeferredBlock<SlabBlock> slab() {
+            return slab;
+        }
+
+        public Item getBaseItem() {
+            return baseBlock.asItem();
+        }
+    }
+
+    public static class WallInfo {
+        private final DeferredBlock<?> wall;
+        private final Block baseBlock;
+
+        public WallInfo(DeferredBlock<?> wall, Block baseBlock) {
+            this.wall = wall;
+            this.baseBlock = baseBlock;
+        }
+
+        public DeferredBlock<?> wall() {
+            return wall;
+        }
+
+        public Item getBaseItem() {
+            return baseBlock.asItem();
+        }
+
+    }
 
     public static class ButtonInfo {
         private final DeferredBlock<ButtonBlock> button;
@@ -134,6 +296,8 @@ public class MotrBlocks {
     public static final ButtonInfo PINK_CONCRETE_BUTTON = new ButtonInfo(
             registerButtonBlock("pink_concrete_button", Blocks.PINK_CONCRETE), Blocks.PINK_CONCRETE);
 
+    public static final ButtonInfo TERRACOTTA_BUTTON = new ButtonInfo(
+            registerButtonBlock("terracotta_button", Blocks.TERRACOTTA), Blocks.TERRACOTTA);
     public static final ButtonInfo WHITE_TERRACOTTA_BUTTON = new ButtonInfo(
             registerButtonBlock("white_terracotta_button", Blocks.WHITE_TERRACOTTA), Blocks.WHITE_TERRACOTTA);
     public static final ButtonInfo LIGHT_GRAY_TERRACOTTA_BUTTON = new ButtonInfo(
@@ -200,7 +364,7 @@ public class MotrBlocks {
             Map.entry("pink_terracotta", PINK_TERRACOTTA_BUTTON),
             Map.entry("purple_terracotta", PURPLE_TERRACOTTA_BUTTON),
             Map.entry("red_terracotta", RED_TERRACOTTA_BUTTON), Map.entry("white_terracotta", WHITE_TERRACOTTA_BUTTON),
-            Map.entry("yellow_terracotta", YELLOW_TERRACOTTA_BUTTON),
+            Map.entry("yellow_terracotta", YELLOW_TERRACOTTA_BUTTON), Map.entry("terracotta", TERRACOTTA_BUTTON),
 
             Map.entry("sandstone", SANDSTONE_BUTTON), Map.entry("red_sandstone", RED_SANDSTONE_BUTTON),
             Map.entry("mud", MUD_BUTTON)
@@ -239,6 +403,8 @@ public class MotrBlocks {
     public static final FenceInfo PINK_CONCRETE_FENCE = new FenceInfo(
             registerFenceBlock("pink_concrete_fence", Blocks.PINK_CONCRETE), Blocks.PINK_CONCRETE);
 
+    public static final FenceInfo TERRACOTTA_FENCE = new FenceInfo(
+            registerFenceBlock("terracotta_fence", Blocks.TERRACOTTA), Blocks.TERRACOTTA);
     public static final FenceInfo WHITE_TERRACOTTA_FENCE = new FenceInfo(
             registerFenceBlock("white_terracotta_fence", Blocks.WHITE_TERRACOTTA), Blocks.WHITE_TERRACOTTA);
     public static final FenceInfo LIGHT_GRAY_TERRACOTTA_FENCE = new FenceInfo(
@@ -303,7 +469,7 @@ public class MotrBlocks {
             Map.entry("pink_terracotta", PINK_TERRACOTTA_FENCE),
             Map.entry("purple_terracotta", PURPLE_TERRACOTTA_FENCE), Map.entry("red_terracotta", RED_TERRACOTTA_FENCE),
             Map.entry("white_terracotta", WHITE_TERRACOTTA_FENCE),
-            Map.entry("yellow_terracotta", YELLOW_TERRACOTTA_FENCE),
+            Map.entry("yellow_terracotta", YELLOW_TERRACOTTA_FENCE), Map.entry("terracotta", TERRACOTTA_FENCE),
 
             Map.entry("sandstone", SANDSTONE_FENCE), Map.entry("red_sandstone", RED_SANDSTONE_FENCE),
             Map.entry("mud", MUD_FENCE)
@@ -344,6 +510,8 @@ public class MotrBlocks {
     public static final FenceGateInfo PINK_CONCRETE_FENCE_GATE = new FenceGateInfo(
             registerFenceGateBlock("pink_concrete_fence_gate", Blocks.PINK_CONCRETE), Blocks.PINK_CONCRETE);
 
+    public static final FenceGateInfo TERRACOTTA_FENCE_GATE = new FenceGateInfo(
+            registerFenceGateBlock("terracotta_fence_gate", Blocks.TERRACOTTA), Blocks.TERRACOTTA);
     public static final FenceGateInfo WHITE_TERRACOTTA_FENCE_GATE = new FenceGateInfo(
             registerFenceGateBlock("white_terracotta_fence_gate", Blocks.WHITE_TERRACOTTA), Blocks.WHITE_TERRACOTTA);
     public static final FenceGateInfo LIGHT_GRAY_TERRACOTTA_FENCE_GATE = new FenceGateInfo(
@@ -419,7 +587,7 @@ public class MotrBlocks {
             Map.entry("blue_terracotta", BLUE_TERRACOTTA_FENCE_GATE),
             Map.entry("purple_terracotta", PURPLE_TERRACOTTA_FENCE_GATE),
             Map.entry("magenta_terracotta", MAGENTA_TERRACOTTA_FENCE_GATE),
-            Map.entry("pink_terracotta", PINK_TERRACOTTA_FENCE_GATE),
+            Map.entry("pink_terracotta", PINK_TERRACOTTA_FENCE_GATE), Map.entry("terracotta", TERRACOTTA_FENCE_GATE),
 
             Map.entry("sandstone", SANDSTONE_FENCE_GATE), Map.entry("red_sandstone", RED_SANDSTONE_FENCE_GATE),
             Map.entry("mud", MUD_FENCE_GATE)

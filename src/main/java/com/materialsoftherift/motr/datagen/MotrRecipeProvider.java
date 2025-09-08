@@ -15,6 +15,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +45,35 @@ public class MotrRecipeProvider extends RecipeProvider {
         });
 
         MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
+        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach((id, blockInfo) -> {
+            ItemLike quenchedBlock = blockInfo.block().get();
+            ItemLike vanillaBlock = blockInfo.getBaseItem();
+            if (vanillaBlock == Items.AIR) {
+                return;
+            }
+
+            ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.BUILDING_BLOCKS, quenchedBlock, 1)
+                    .requires(vanillaBlock)
+                    .requires(Items.PRISMARINE_CRYSTALS)
+                    .unlockedBy("has_" + id, has(vanillaBlock))
+                    .save(this.output, "quenched_" + id + "_from_prismarine_crystals");
+
+            ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, quenchedBlock, 8)
+                    .pattern("###")
+                    .pattern("#W#")
+                    .pattern("###")
+                    .define('#', vanillaBlock)
+                    .define('W', Items.WET_SPONGE)
+                    .unlockedBy("has_" + id, has(vanillaBlock))
+                    .save(this.output, "quenched_" + id + "_from_wet_sponge");
+
+            ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.BUILDING_BLOCKS, vanillaBlock, 1)
+                    .requires(quenchedBlock)
+                    .unlockedBy("has_" + id, has(vanillaBlock))
+                    .save(this.output, id + "_from_quenched");
+        });
+
+        MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)
                     .pattern("###")
                     .define('#', slabInfo.getBaseItem())
