@@ -38,14 +38,6 @@ import java.util.function.Supplier;
 
 public class MotrSlabs {
 
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
-
-    public static <T extends Block> DeferredBlock<T> registerBlock(String key, Supplier<T> sup) {
-        DeferredBlock<T> register = BLOCKS.register(key, sup);
-        MotrItems.registerSimpleBlockItem(key, register);
-        return register;
-    }
-
     public static class SlabInfo {
         private final DeferredBlock<SlabBlock> slab;
         private final Block baseBlock;
@@ -63,6 +55,8 @@ public class MotrSlabs {
             return baseBlock.asItem();
         }
     }
+
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MaterialsOfTheRift.MODID);
 
     public static final SlabInfo WHITE_CONCRETE_SLAB = registerSlabBlock("white_concrete_slab", Blocks.WHITE_CONCRETE);
     public static final SlabInfo LIGHT_GRAY_CONCRETE_SLAB = registerSlabBlock("light_gray_concrete_slab",
@@ -340,6 +334,17 @@ public class MotrSlabs {
             Map.entry("gold_block", GOLD_BLOCK_SLAB), Map.entry("iron_block", IRON_BLOCK_SLAB)
     );
 
+    public static ResourceKey<Block> blockId(String name) {
+        return ResourceKey.create(Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath(MaterialsOfTheRift.MODID, name));
+    }
+
+    public static <T extends Block> DeferredBlock<T> registerBlock(String key, Supplier<T> sup) {
+        DeferredBlock<T> register = BLOCKS.register(key, sup);
+        MotrItems.registerSimpleBlockItem(key, register);
+        return register;
+    }
+
     private static SlabInfo registerSlabBlock(String id, Block baseBlock) {
         DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
             BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
@@ -611,10 +616,5 @@ public class MotrSlabs {
         }
 
         return WeatheringCopper.WeatherState.UNAFFECTED;
-    }
-
-    public static ResourceKey<Block> blockId(String name) {
-        return ResourceKey.create(Registries.BLOCK,
-                ResourceLocation.fromNamespaceAndPath(MaterialsOfTheRift.MODID, name));
     }
 }
