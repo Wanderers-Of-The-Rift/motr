@@ -20,6 +20,8 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
 
         MotrBlocks.REGISTERED_NOGRAV_BLOCKS.values().forEach(noGravInfo -> dropSelf(noGravInfo.block().get()));
 
+        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.values().forEach(blockInfo -> dropSelf(blockInfo.block().get()));
+
         MotrBlocks.REGISTERED_STANDARD_SLABS.values()
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSlabItemTable(slabInfo.slab().get())));
         MotrBlocks.REGISTERED_DIRECTIONAL_SLABS.values()
