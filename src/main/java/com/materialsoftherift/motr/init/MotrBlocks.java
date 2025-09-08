@@ -1,7 +1,13 @@
 package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
-import com.materialsoftherift.motr.blocks.quenched.*;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedCoralBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedCoralFanBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedFarmlandBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedKelpBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedSeaPickleBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedSeagrassBlock;
+import com.materialsoftherift.motr.blocks.quenched.QuenchedSugarCaneBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,7 +28,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.CarpetBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.SeaPickleBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -38,8 +54,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-
 
 public class MotrBlocks {
 
@@ -72,8 +86,8 @@ public class MotrBlocks {
     public static final QuenchedBlockInfo QUENCHED_KELP = registerQuenchedBlock("quenched_kelp", Blocks.KELP,
             () -> new QuenchedKelpBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.KELP).setId(blockId("quenched_kelp"))));
-    public static final QuenchedBlockInfo QUENCHED_KELP_PLANT = registerQuenchedBlock("quenched_kelp_plant", Blocks.KELP_PLANT,
-            () -> new QuenchedKelpBlock(
+    public static final QuenchedBlockInfo QUENCHED_KELP_PLANT = registerQuenchedBlock("quenched_kelp_plant",
+            Blocks.KELP_PLANT, () -> new QuenchedKelpBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.KELP_PLANT).setId(blockId("quenched_kelp_plant"))));
     public static final QuenchedBlockInfo QUENCHED_SEAGRASS = registerQuenchedBlock("quenched_seagrass",
             Blocks.SEAGRASS, () -> new QuenchedSeagrassBlock(
@@ -81,7 +95,8 @@ public class MotrBlocks {
     public static final QuenchedBlockInfo QUENCHED_SEA_PICKLE = registerQuenchedBlock("quenched_sea_pickle",
             Blocks.SEA_PICKLE, () -> new QuenchedSeaPickleBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_PICKLE)
-                            .lightLevel(block -> 3 + 3 * block.getValue(SeaPickleBlock.PICKLES)).setId(blockId("quenched_sea_pickle"))));
+                            .lightLevel(block -> 3 + 3 * block.getValue(SeaPickleBlock.PICKLES))
+                            .setId(blockId("quenched_sea_pickle"))));
     public static final QuenchedBlockInfo QUENCHED_TUBE_CORAL = registerQuenchedBlock("quenched_tube_coral",
             Blocks.TUBE_CORAL_BLOCK,
             () -> new QuenchedCoralBlock(Blocks.DEAD_TUBE_CORAL_BLOCK,
@@ -142,16 +157,14 @@ public class MotrBlocks {
     public static final Map<String, QuenchedBlockInfo> REGISTERED_QUENCHED_BLOCKS = Map.ofEntries(
             Map.entry("kelp", QUENCHED_KELP), Map.entry("seagrass", QUENCHED_SEAGRASS),
             Map.entry("kelp_plant", QUENCHED_KELP_PLANT), Map.entry("sea_pickle", QUENCHED_SEA_PICKLE),
-            Map.entry("tube_coral", QUENCHED_TUBE_CORAL),
-            Map.entry("brain_coral", QUENCHED_BRAIN_CORAL), Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL),
-            Map.entry("fire_coral", QUENCHED_FIRE_CORAL), Map.entry("horn_coral", QUENCHED_HORN_CORAL),
-            Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
+            Map.entry("tube_coral", QUENCHED_TUBE_CORAL), Map.entry("brain_coral", QUENCHED_BRAIN_CORAL),
+            Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL), Map.entry("fire_coral", QUENCHED_FIRE_CORAL),
+            Map.entry("horn_coral", QUENCHED_HORN_CORAL), Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
             Map.entry("brain_coral_fan", QUENCHED_BRAIN_CORAL_FAN),
             Map.entry("bubble_coral_fan", QUENCHED_BUBBLE_CORAL_FAN),
             Map.entry("fire_coral_fan", QUENCHED_FIRE_CORAL_FAN), Map.entry("horn_coral_fan", QUENCHED_HORN_CORAL_FAN),
             Map.entry("farmland", QUENCHED_FARMLAND), Map.entry("sugar_cane", QUENCHED_SUGAR_CANE)
     );
-
 
     public static class SlabInfo {
         private final DeferredBlock<SlabBlock> slab;

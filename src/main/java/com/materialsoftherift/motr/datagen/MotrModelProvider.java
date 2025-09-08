@@ -19,7 +19,12 @@ import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BubbleColumnBlock;
+import net.minecraft.world.level.block.CoralFanBlock;
+import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -30,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MotrModelProvider extends ModelProvider {
+
+    private static final ResourceLocation DOT_TEXTURE = ResourceLocation.fromNamespaceAndPath(MaterialsOfTheRift.MODID,
+            "item/dot");
 
     private static final Map<String, String> COPPER_TEXTURE_OVERRIDES = Map.ofEntries(
             Map.entry("waxed_copper_block", "copper_block"), Map.entry("waxed_exposed_copper", "exposed_copper"),
@@ -48,11 +56,11 @@ public class MotrModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
+        createOverlay(itemModels, DOT_TEXTURE);
 
         MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
             registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
-
 
         MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach(
                 (texture, blockInfo) -> {
@@ -97,10 +105,8 @@ public class MotrModelProvider extends ModelProvider {
                         );
                         return;
                     }
-
-                    ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
-                    itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
-                            ItemModelUtils.plainModel(defaultModel));
+                    addWithOverlay(blockInfo.block().asItem(),
+                            ModelLocationUtils.getModelLocation(blockInfo.baseBlock()), DOT_TEXTURE, itemModels);
 
                     ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
                     blockModels.blockStateOutput
@@ -244,9 +250,6 @@ public class MotrModelProvider extends ModelProvider {
         ResourceLocation itemModel = ModelLocationUtils.getModelLocation(item);
         ResourceLocation baseId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
                 itemModel.getPath() + "_base");
-        ResourceLocation overlayId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
-                itemModel.getPath() + "_overlay");
-        ResourceLocation dotTex = ResourceLocation.fromNamespaceAndPath(MaterialsOfTheRift.MODID, "item/dot");
 
         String base3dJson = """
                 {
@@ -257,6 +260,10 @@ public class MotrModelProvider extends ModelProvider {
                 baseId, () -> com.google.gson.JsonParser.parseString(base3dJson).getAsJsonObject()
         );
 
+        addWithOverlay(item, baseId, DOT_TEXTURE, itemModels);
+    }
+
+    private void createOverlay(ItemModelGenerators itemModels, ResourceLocation overlayTex) {
         String overlayGuiOnlyJson = """
                 {
                   "parent": "minecraft:item/generated",
@@ -274,21 +281,28 @@ public class MotrModelProvider extends ModelProvider {
                     "fixed":                 { "scale": [0,0,0] }
                   }
                 }
-                """.formatted(dotTex);
+                """.formatted(overlayTex);
 
         itemModels.modelOutput.accept(
-                overlayId, () -> com.google.gson.JsonParser.parseString(overlayGuiOnlyJson).getAsJsonObject()
+                overlayTex.withSuffix("_overlay"),
+                () -> com.google.gson.JsonParser.parseString(overlayGuiOnlyJson).getAsJsonObject()
         );
+    }
 
+    private void addWithOverlay(
+            Item item,
+            ResourceLocation baseModel,
+            ResourceLocation overlay,
+            ItemModelGenerators itemModels) {
         itemModels.itemModelOutput.accept(
                 item, new CompositeModel.Unbaked(
                         java.util.List.of(
-                                new BlockModelWrapper.Unbaked(overlayId, java.util.Collections.emptyList()),
-                                new BlockModelWrapper.Unbaked(baseId, java.util.Collections.emptyList())
+                                new BlockModelWrapper.Unbaked(overlay.withSuffix("_overlay"),
+                                        java.util.Collections.emptyList()),
+                                new BlockModelWrapper.Unbaked(baseModel, java.util.Collections.emptyList())
                         )
                 )
         );
-
     }
 
     private void registerStandardSlabModel(BlockModelGenerators blockModels, Block slab, String textureName) {

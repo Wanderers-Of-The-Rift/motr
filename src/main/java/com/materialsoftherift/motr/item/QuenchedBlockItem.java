@@ -22,7 +22,7 @@ public class QuenchedBlockItem extends BlockItem {
             @NotNull Item.TooltipContext tooltipContext,
             @NotNull List<Component> list,
             @NotNull TooltipFlag flag) {
-    //    list.add(Component.translatable("item.motr.does_not_require_water"));
+        // list.add(Component.translatable("item.motr.does_not_require_water"));
         super.appendHoverText(item, tooltipContext, list, flag);
     }
 

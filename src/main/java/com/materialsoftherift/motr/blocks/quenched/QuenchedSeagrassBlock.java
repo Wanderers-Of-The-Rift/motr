@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class QuenchedSeagrassBlock extends SeagrassBlock {
 
-    public QuenchedSeagrassBlock(Properties p_154496_) {
-        super(p_154496_);
+    public QuenchedSeagrassBlock(Properties properties) {
+        super(properties);
     }
 
     @Override
