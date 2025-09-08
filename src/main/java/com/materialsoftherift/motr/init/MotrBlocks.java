@@ -1,46 +1,24 @@
 package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
 import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class MotrBlocks {
@@ -645,8 +623,6 @@ public class MotrBlocks {
 
     );
 
-
-
     public static final DeferredBlock<CarpetBlock> HAY_CARPET = registerCarpet("hay_carpet", Blocks.HAY_BLOCK);
 
     public static <T extends Block> DeferredBlock<T> registerBlock(String key, Supplier<T> sup) {
@@ -660,7 +636,6 @@ public class MotrBlocks {
         MotrItems.registerSimpleDevBlockItem(key, register);
         return register;
     }
-
 
     private static WallInfo registerWallBlock(String id, Block baseBlock) {
         DeferredBlock<?> wall = registerBlock(id, () -> new net.minecraft.world.level.block.WallBlock(
@@ -698,7 +673,6 @@ public class MotrBlocks {
                 BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id))
         ));
     }
-
 
     public static ResourceKey<Block> blockId(String name) {
         return ResourceKey.create(Registries.BLOCK,

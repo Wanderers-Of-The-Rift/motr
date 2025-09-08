@@ -173,16 +173,20 @@ public class MotrSlabs {
     public static final SlabInfo PODZOL_SLAB = registerSlabBlock("podzol_slab", Blocks.PODZOL);
     public static final SlabInfo MYCELIUM_SLAB = registerSlabBlock("mycelium_slab", Blocks.MYCELIUM);
     public static final SlabInfo MUD_SLAB = registerSlabBlock("mud_slab", Blocks.MUD);
-    public static final SlabInfo MUDDY_MANGROVE_ROOTS_SLAB = registerSlabBlock("muddy_mangrove_roots_slab", Blocks.MUDDY_MANGROVE_ROOTS);
+    public static final SlabInfo MUDDY_MANGROVE_ROOTS_SLAB = registerSlabBlock("muddy_mangrove_roots_slab",
+            Blocks.MUDDY_MANGROVE_ROOTS);
 
     public static final SlabInfo SOUL_SAND_SLAB = registerSlabBlock("soul_sand_slab", Blocks.SOUL_SAND);
     public static final SlabInfo SOUL_SOIL_SLAB = registerSlabBlock("soul_soil_slab", Blocks.SOUL_SOIL);
-    public static final SlabInfo NETHER_WART_BLOCK_SLAB = registerSlabBlock("nether_wart_block_slab", Blocks.NETHER_WART_BLOCK);
-    public static final SlabInfo WARPED_WART_BLOCK_SLAB = registerSlabBlock("warped_wart_block_slab", Blocks.WARPED_WART_BLOCK);
+    public static final SlabInfo NETHER_WART_BLOCK_SLAB = registerSlabBlock("nether_wart_block_slab",
+            Blocks.NETHER_WART_BLOCK);
+    public static final SlabInfo WARPED_WART_BLOCK_SLAB = registerSlabBlock("warped_wart_block_slab",
+            Blocks.WARPED_WART_BLOCK);
     public static final SlabInfo MAGMA_SLAB = registerSlabBlock("magma_slab", Blocks.MAGMA_BLOCK);
 
     public static final SlabInfo MOSS_BLOCK_SLAB = registerSlabBlock("moss_block_slab", Blocks.MOSS_BLOCK);
-    public static final SlabInfo PALE_MOSS_BLOCK_SLAB = registerSlabBlock("pale_moss_block_slab", Blocks.PALE_MOSS_BLOCK);
+    public static final SlabInfo PALE_MOSS_BLOCK_SLAB = registerSlabBlock("pale_moss_block_slab",
+            Blocks.PALE_MOSS_BLOCK);
 
     public static final SlabInfo SNOW_SLAB = registerSlabBlock("snow_slab", Blocks.SNOW_BLOCK);
     public static final SlabInfo ICE_SLAB = registerSlabBlock("ice_slab", Blocks.ICE);
@@ -191,7 +195,8 @@ public class MotrSlabs {
 
     public static final SlabInfo CLAY_SLAB = registerSlabBlock("clay_slab", Blocks.CLAY);
     public static final SlabInfo RESIN_BLOCK_SLAB = registerSlabBlock("resin_block_slab", Blocks.RESIN_BLOCK);
-    public static final SlabInfo GILDED_BLACKSTONE_SLAB = registerSlabBlock("gilded_blackstone_slab", Blocks.GILDED_BLACKSTONE);
+    public static final SlabInfo GILDED_BLACKSTONE_SLAB = registerSlabBlock("gilded_blackstone_slab",
+            Blocks.GILDED_BLACKSTONE);
 
     public static final SlabInfo RAW_IRON_BLOCK_SLAB = registerSlabBlock("raw_iron_block_slab", Blocks.RAW_IRON_BLOCK);
     public static final SlabInfo RAW_GOLD_BLOCK_SLAB = registerSlabBlock("raw_gold_block_slab", Blocks.RAW_GOLD_BLOCK);
@@ -199,7 +204,6 @@ public class MotrSlabs {
     public static final SlabInfo IRON_BLOCK_SLAB = registerSlabBlock("iron_block_slab", Blocks.IRON_BLOCK);
 
     public static final SlabInfo BONE_BLOCK_SLAB = registerSlabBlock("bone_block_slab", Blocks.BONE_BLOCK);
-
 
     public static final SlabInfo COPPER_SLAB = registerCopperSlabBlock("copper_slab", Blocks.COPPER_BLOCK);
     public static final SlabInfo EXPOSED_COPPER_SLAB = registerCopperSlabBlock("exposed_copper_slab",
