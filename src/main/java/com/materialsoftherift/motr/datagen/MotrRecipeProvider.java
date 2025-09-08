@@ -3,6 +3,7 @@ package com.materialsoftherift.motr.datagen;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -90,7 +91,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_STANDARD_WALLS.forEach((id, wallInfo) -> {
+        MotrWalls.REGISTERED_STANDARD_WALLS.forEach((id, wallInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, wallInfo.wall().get(), 6)
                     .pattern("###")
                     .pattern("###")
@@ -99,7 +100,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_GLASS_WALLS.forEach((id, wallInfo) -> {
+        MotrWalls.REGISTERED_GLASS_WALLS.forEach((id, wallInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, wallInfo.wall().get(), 6)
                     .pattern("###")
                     .pattern("###")

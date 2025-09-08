@@ -4,6 +4,7 @@ import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -121,7 +122,7 @@ public class MotrModelProvider extends ModelProvider {
             }
         });
 
-        MotrBlocks.REGISTERED_STANDARD_WALLS.forEach((textureName, wallInfo) -> {
+        MotrWalls.REGISTERED_STANDARD_WALLS.forEach((textureName, wallInfo) -> {
             registerWallModel(blockModels, wallInfo.wall().get(), textureName);
 
             ResourceLocation itemModel = ModelTemplates.WALL_INVENTORY.create(
@@ -137,7 +138,7 @@ public class MotrModelProvider extends ModelProvider {
 
         });
 
-        MotrBlocks.REGISTERED_GLASS_WALLS.forEach((textureName, wallInfo) -> {
+        MotrWalls.REGISTERED_GLASS_WALLS.forEach((textureName, wallInfo) -> {
             Block wall = wallInfo.wall().get();
 
             registerGlassWallModel(blockModels, wall, textureName);

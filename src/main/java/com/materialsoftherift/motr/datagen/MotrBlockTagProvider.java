@@ -4,6 +4,7 @@ import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -217,8 +218,8 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
 
     private Block[] getAllWallBlocks() {
         return Stream.concat(
-                MotrBlocks.REGISTERED_STANDARD_WALLS.values().stream(),
-                MotrBlocks.REGISTERED_GLASS_WALLS.values().stream()
+                MotrWalls.REGISTERED_STANDARD_WALLS.values().stream(),
+                MotrWalls.REGISTERED_GLASS_WALLS.values().stream()
         ).map(wallInfo -> wallInfo.wall().get()).toArray(Block[]::new);
     }
 
