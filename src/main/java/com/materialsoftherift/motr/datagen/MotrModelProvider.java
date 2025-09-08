@@ -19,13 +19,14 @@ import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 public class MotrModelProvider extends ModelProvider {
@@ -51,6 +52,60 @@ public class MotrModelProvider extends ModelProvider {
         MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
             registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
+
+
+        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach(
+                (texture, blockInfo) -> {
+                    if (blockInfo.baseBlock() instanceof BubbleColumnBlock) {
+                        ResourceLocation itemTexture = ResourceLocation.withDefaultNamespace("item/barrier");
+                        itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
+                                ItemModelUtils.plainModel(itemTexture));
+                        blockModels.createParticleOnlyBlock(blockInfo.block().get(), Blocks.WATER);
+                        return;
+                    }
+                    if (blockInfo.baseBlock() instanceof CoralFanBlock) {
+                        TexturedModel texturedmodel = TexturedModel.CORAL_FAN.get(blockInfo.baseBlock());
+                        ResourceLocation resourcelocation = texturedmodel.create(blockInfo.baseBlock(),
+                                blockModels.modelOutput);
+                        blockModels.blockStateOutput.accept(
+                                BlockModelGenerators.createSimpleBlock(blockInfo.block().get(), resourcelocation));
+
+                        ResourceLocation defaultModel = ModelLocationUtils
+                                .getModelLocation(blockInfo.baseBlock().asItem());
+                        itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
+                                ItemModelUtils.plainModel(defaultModel));
+                        return;
+                    }
+                    if (blockInfo.baseBlock() instanceof SeaPickleBlock) {
+                        ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
+                        itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
+                                ItemModelUtils.plainModel(defaultModel));
+                        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(blockInfo.block().get())
+                                .with(PropertyDispatch.property(SeaPickleBlock.PICKLES)
+                                        .select(1, List.of(BlockModelGenerators.createRotatedVariants(
+                                                ModelLocationUtils.getModelLocation(Blocks.SEA_PICKLE))))
+                                        .select(2,
+                                                List.of(BlockModelGenerators.createRotatedVariants(ResourceLocation
+                                                        .withDefaultNamespace("block/two_sea_pickles"))))
+                                        .select(3,
+                                                List.of(BlockModelGenerators.createRotatedVariants(ResourceLocation
+                                                        .withDefaultNamespace("block/three_sea_pickles"))))
+                                        .select(4,
+                                                List.of(BlockModelGenerators.createRotatedVariants(ResourceLocation
+                                                        .withDefaultNamespace("block/four_sea_pickles"))))
+                                )
+                        );
+                        return;
+                    }
+
+                    ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
+                    itemModels.itemModelOutput.accept(blockInfo.block().get().asItem(),
+                            ItemModelUtils.plainModel(defaultModel));
+
+                    ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
+                    blockModels.blockStateOutput
+                            .accept(BlockModelGenerators.createSimpleBlock(blockInfo.block().get(), vanillaModel));
+                });
 
         blockModels.createTrivialBlock(MotrBlocks.HAY_CARPET.get(), TexturedModel.CARPET.updateTexture(
                 mapping -> mapping.put(TextureSlot.WOOL, ResourceLocation.withDefaultNamespace("block/hay_block_top"))

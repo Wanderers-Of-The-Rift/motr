@@ -1,11 +1,13 @@
 package com.materialsoftherift.motr.datagen;
 
+import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -19,6 +21,8 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
 
         MotrBlocks.REGISTERED_NOGRAV_BLOCKS.values().forEach(noGravInfo -> dropSelf(noGravInfo.block().get()));
+
+        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.values().forEach(blockInfo -> dropSelf(blockInfo.block().get()));
 
         MotrBlocks.REGISTERED_STANDARD_SLABS.values()
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSlabItemTable(slabInfo.slab().get())));

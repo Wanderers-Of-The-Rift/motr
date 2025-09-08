@@ -1,7 +1,11 @@
 package com.materialsoftherift.motr.init;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
+import com.materialsoftherift.motr.item.QuenchedBlockItem;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -19,6 +23,15 @@ public class MotrItems {
         DeferredItem<BlockItem> simpleBlockItem = ITEMS.registerSimpleBlockItem(id, block);
         BLOCK_ITEMS.add(simpleBlockItem);
         return simpleBlockItem;
+    }
+
+    public static <T extends Block> void registerQuenchedBlockItem(String id, DeferredBlock<T> block) {
+        DeferredItem<BlockItem> simpleBlockItem = ITEMS.register(id,
+                () -> new QuenchedBlockItem(block.get(),
+                        new Item.Properties().setId(ResourceKey.create(Registries.ITEM, block.getId()))
+                                .useBlockDescriptionPrefix()));
+
+        BLOCK_ITEMS.add(simpleBlockItem);
     }
 
     public static <T extends Block> DeferredItem<BlockItem> registerSimpleDevBlockItem(
