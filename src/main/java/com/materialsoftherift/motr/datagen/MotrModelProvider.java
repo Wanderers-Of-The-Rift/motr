@@ -2,6 +2,9 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -55,9 +58,10 @@ public class MotrModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, @NotNull ItemModelGenerators itemModels) {
+
         createOverlay(itemModels, DOT_TEXTURE);
 
-        MotrBlocks.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
+        MotrNoGrav.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
             registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
 
@@ -114,15 +118,15 @@ public class MotrModelProvider extends ModelProvider {
 
         blockModels.createTrivialCube(MotrBlocks.MOTR.get());
 
-        MotrBlocks.REGISTERED_STANDARD_SLABS.forEach((textureName, slabInfo) -> {
+        MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((textureName, slabInfo) -> {
             registerStandardSlabModel(blockModels, slabInfo.slab().get(), textureName);
         });
 
-        MotrBlocks.REGISTERED_GLASS_SLABS.forEach((textureId, slabInfo) -> {
+        MotrSlabs.REGISTERED_GLASS_SLABS.forEach((textureId, slabInfo) -> {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
-        MotrBlocks.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_COPPER_SLABS.forEach((id, slabInfo) -> {
             if (id.contains("bulb")) {
                 String baseTextureName = COPPER_TEXTURE_OVERRIDES.getOrDefault(id, id);
 
@@ -141,15 +145,15 @@ public class MotrModelProvider extends ModelProvider {
             }
         });
 
-        MotrBlocks.REGISTERED_SILKTOUCH_SLABS.forEach((textureId, slabInfo) -> {
+        MotrSlabs.REGISTERED_SILKTOUCH_SLABS.forEach((textureId, slabInfo) -> {
             registerGlassSlabModel(blockModels, slabInfo.slab().get(), textureId);
         });
 
-        MotrBlocks.REGISTERED_TRIMM_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_TRIMM_SLABS.forEach((id, slabInfo) -> {
             registerTrimmSlabModel(blockModels, slabInfo.slab().get(), id, id, id);
         });
 
-        MotrBlocks.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
+        MotrSlabs.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
             {
                 String side = id;
                 String top = id;
@@ -175,7 +179,7 @@ public class MotrModelProvider extends ModelProvider {
             }
         });
 
-        MotrBlocks.REGISTERED_STANDARD_WALLS.forEach((textureName, wallInfo) -> {
+        MotrWalls.REGISTERED_STANDARD_WALLS.forEach((textureName, wallInfo) -> {
             registerWallModel(blockModels, wallInfo.wall().get(), textureName);
 
             ResourceLocation itemModel = ModelTemplates.WALL_INVENTORY.create(
@@ -191,7 +195,7 @@ public class MotrModelProvider extends ModelProvider {
 
         });
 
-        MotrBlocks.REGISTERED_GLASS_WALLS.forEach((textureName, wallInfo) -> {
+        MotrWalls.REGISTERED_GLASS_WALLS.forEach((textureName, wallInfo) -> {
             Block wall = wallInfo.wall().get();
 
             registerGlassWallModel(blockModels, wall, textureName);
@@ -232,33 +236,32 @@ public class MotrModelProvider extends ModelProvider {
     private void registerNoGravModel(
             BlockModelGenerators blockModels,
             ItemModelGenerators itemModels,
-            MotrBlocks.NoGravInfo info,
+            MotrNoGrav.NoGravInfo info,
             String textureName) {
         var block = info.block().get();
         var item = block.asItem();
-
         ResourceLocation blockTex = ResourceLocation.withDefaultNamespace("block/" + textureName);
         ResourceLocation blockModel = ModelLocationUtils.getModelLocation(block);
         ModelTemplates.CUBE_ALL.create(blockModel, TextureMapping.cube(blockTex), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, blockModel));
-
         ResourceLocation itemModel = ModelLocationUtils.getModelLocation(item);
         ResourceLocation baseId = ResourceLocation.fromNamespaceAndPath(itemModel.getNamespace(),
                 itemModel.getPath() + "_base");
-
         String base3dJson = """
                 {
                   "parent": "%s"
+
                 }
                 """.formatted(blockModel);
         itemModels.modelOutput.accept(
                 baseId, () -> com.google.gson.JsonParser.parseString(base3dJson).getAsJsonObject()
         );
-
         addWithOverlay(item, baseId, DOT_TEXTURE, itemModels);
+
     }
 
     private void createOverlay(ItemModelGenerators itemModels, ResourceLocation overlayTex) {
+
         String overlayGuiOnlyJson = """
                 {
                   "parent": "minecraft:item/generated",
@@ -268,12 +271,12 @@ public class MotrModelProvider extends ModelProvider {
                       "translation": [0, 0, 6],
                       "scale": [1, 1, 1]
                     },
-                    "thirdperson_righthand": { "scale": [0,0,0] },
-                    "thirdperson_lefthand":  { "scale": [0,0,0] },
-                    "firstperson_righthand": { "scale": [0,0,0] },
-                    "firstperson_lefthand":  { "scale": [0,0,0] },
-                    "ground":                { "scale": [0,0,0] },
-                    "fixed":                 { "scale": [0,0,0] }
+                    "thirdperson_righthand": { "scale": [0, 0, 0] },
+                    "thirdperson_lefthand":  { "scale": [0, 0, 0] },
+                    "firstperson_righthand": { "scale": [0, 0, 0] },
+                    "firstperson_lefthand":  { "scale": [0, 0, 0] },
+                    "ground":                { "scale": [0, 0, 0] },
+                    "fixed":                 { "scale": [0, 0, 0] }
                   }
                 }
                 """.formatted(overlayTex);
@@ -282,6 +285,7 @@ public class MotrModelProvider extends ModelProvider {
                 overlayTex.withSuffix("_overlay"),
                 () -> com.google.gson.JsonParser.parseString(overlayGuiOnlyJson).getAsJsonObject()
         );
+
     }
 
     private void addWithOverlay(

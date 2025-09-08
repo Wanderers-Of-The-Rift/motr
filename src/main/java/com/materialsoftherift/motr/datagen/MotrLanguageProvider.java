@@ -2,6 +2,9 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
@@ -27,19 +30,19 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         // Adds a block translation.
 
-        addNoGravTranslations(MotrBlocks.REGISTERED_NOGRAV_BLOCKS);
+        addNoGravTranslations(MotrNoGrav.REGISTERED_NOGRAV_BLOCKS);
 
         addQuenchedBlockTranslations(MotrBlocks.REGISTERED_QUENCHED_BLOCKS);
 
-        addWallTranslations(MotrBlocks.REGISTERED_STANDARD_WALLS);
-        addWallTranslations(MotrBlocks.REGISTERED_GLASS_WALLS);
+        addWallTranslations(MotrWalls.REGISTERED_STANDARD_WALLS);
+        addWallTranslations(MotrWalls.REGISTERED_GLASS_WALLS);
 
-        addSlabTranslations(MotrBlocks.REGISTERED_STANDARD_SLABS);
-        addSlabTranslations(MotrBlocks.REGISTERED_GLASS_SLABS);
-        addSlabTranslations(MotrBlocks.REGISTERED_TRIMM_SLABS);
-        addSlabTranslations(MotrBlocks.REGISTERED_DIRECTIONAL_SLABS);
-        addSlabTranslations(MotrBlocks.REGISTERED_SILKTOUCH_SLABS);
-        addSlabTranslations(MotrBlocks.REGISTERED_COPPER_SLABS);
+        addSlabTranslations(MotrSlabs.REGISTERED_STANDARD_SLABS);
+        addSlabTranslations(MotrSlabs.REGISTERED_GLASS_SLABS);
+        addSlabTranslations(MotrSlabs.REGISTERED_TRIMM_SLABS);
+        addSlabTranslations(MotrSlabs.REGISTERED_DIRECTIONAL_SLABS);
+        addSlabTranslations(MotrSlabs.REGISTERED_SILKTOUCH_SLABS);
+        addSlabTranslations(MotrSlabs.REGISTERED_COPPER_SLABS);
 
         addButtonTranslations(MotrBlocks.REGISTERED_BUTTONS);
 
@@ -70,7 +73,7 @@ public class MotrLanguageProvider extends LanguageProvider {
         return sb.toString().trim();
     }
 
-    private void addNoGravTranslations(Map<String, MotrBlocks.NoGravInfo> noGravMap) {
+    private void addNoGravTranslations(Map<String, MotrNoGrav.NoGravInfo> noGravMap) {
         noGravMap.forEach((baseName, noGravInfo) -> {
             String translation = "No Grav " + snakeCaseToCapitalizedCase(baseName);
             addBlock(noGravInfo.block(), translation);
@@ -112,14 +115,14 @@ public class MotrLanguageProvider extends LanguageProvider {
         });
     }
 
-    private void addSlabTranslations(Map<String, MotrBlocks.SlabInfo> slabMap) {
+    private void addSlabTranslations(Map<String, MotrSlabs.SlabInfo> slabMap) {
         slabMap.forEach((baseName, slabInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Slab";
             addBlock(slabInfo.slab(), translation);
         });
     }
 
-    private void addWallTranslations(Map<String, MotrBlocks.WallInfo> wallMap) {
+    private void addWallTranslations(Map<String, MotrWalls.WallInfo> wallMap) {
         wallMap.forEach((baseName, wallInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Wall";
             addBlock(wallInfo.wall(), translation);
