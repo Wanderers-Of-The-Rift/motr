@@ -2,10 +2,14 @@ package com.materialsoftherift.motr;
 
 import com.materialsoftherift.motr.init.MotrBlockEntities;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
 import com.materialsoftherift.motr.init.MotrCreativeTabs;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrItems;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import com.materialsoftherift.motr.init.recipe.MotrRecipeCategories;
 import com.materialsoftherift.motr.init.recipe.MotrRecipeDisplayTypes;
@@ -43,9 +47,13 @@ public class MaterialsOfTheRift {
         MotrRecipeDisplayTypes.RECIPE_DISPLAY_TYPES.register(modEventBus);
 
         // Block variants
+        MotrQuenched.BLOCKS.register(modEventBus);
         MotrNoGrav.BLOCKS.register(modEventBus);
         MotrSlabs.BLOCKS.register(modEventBus);
+        MotrFenceAndGate.BLOCKS.register(modEventBus);
+        MotrStairs.BLOCKS.register(modEventBus);
         MotrWalls.BLOCKS.register(modEventBus);
+        MotrButtons.BLOCKS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

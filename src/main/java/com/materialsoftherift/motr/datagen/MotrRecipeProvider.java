@@ -1,8 +1,12 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -44,7 +48,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach((id, blockInfo) -> {
+        MotrQuenched.REGISTERED_QUENCHED_BLOCKS.forEach((id, blockInfo) -> {
             ItemLike quenchedBlock = blockInfo.block().get();
             ItemLike vanillaBlock = blockInfo.getBaseItem();
             if (vanillaBlock == Items.AIR) {
@@ -138,7 +142,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_FENCES.forEach((id, fenceInfo) -> {
+        MotrFenceAndGate.REGISTERED_FENCES.forEach((id, fenceInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, fenceInfo.fence().get(), 3)
                     .pattern("#S#")
                     .pattern("#S#")
@@ -148,7 +152,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_BUTTONS.forEach((id, buttonInfo) -> {
+        MotrButtons.REGISTERED_BUTTONS.forEach((id, buttonInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, buttonInfo.button().get(), 1)
                     .pattern("#")
                     .define('#', buttonInfo.getBaseItem())
@@ -156,7 +160,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_FENCE_GATES.forEach((id, fenceGateInfo) -> {
+        MotrFenceAndGate.REGISTERED_FENCE_GATES.forEach((id, fenceGateInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, fenceGateInfo.fenceGate().get(), 3)
                     .pattern("S#S")
                     .pattern("S#S")
@@ -166,7 +170,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_STANDARD_STAIRS.forEach((id, stairInfo) -> {
+        MotrStairs.REGISTERED_STANDARD_STAIRS.forEach((id, stairInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, stairInfo.stair().get(), 4)
                     .pattern("#  ")
                     .pattern("## ")

@@ -1,10 +1,11 @@
 package com.materialsoftherift.motr.event;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
-import com.materialsoftherift.motr.init.MotrBlocks;
-import net.minecraft.client.color.block.BlockColors;
+import com.materialsoftherift.motr.init.MotrQuenched;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.GrassColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -16,13 +17,21 @@ public class ClientModEvents {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        MotrBlocks.REGISTERED_QUENCHED_BLOCKS
+        MotrQuenched.REGISTERED_QUENCHED_BLOCKS
                 .forEach((name, info) -> ItemBlockRenderTypes.setRenderLayer(info.block().get(), RenderType.cutout()));
     }
 
     @SubscribeEvent
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        BlockColors blockColors = event.getBlockColors();
+        event.register(
+                (state, level, pos, tintIndex) -> {
+                    if (level != null && pos != null) {
+                        return BiomeColors.getAverageGrassColor(level, pos);
+                    } else {
+                        return GrassColor.getDefaultColor();
+                    }
+                }, MotrQuenched.QUENCHED_SUGAR_CANE.block().get()
+        );
     }
 
 }

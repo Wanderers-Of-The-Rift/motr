@@ -2,8 +2,12 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -32,7 +36,7 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addNoGravTranslations(MotrNoGrav.REGISTERED_NOGRAV_BLOCKS);
 
-        addQuenchedBlockTranslations(MotrBlocks.REGISTERED_QUENCHED_BLOCKS);
+        addQuenchedBlockTranslations(MotrQuenched.REGISTERED_QUENCHED_BLOCKS);
 
         addWallTranslations(MotrWalls.REGISTERED_STANDARD_WALLS);
         addWallTranslations(MotrWalls.REGISTERED_GLASS_WALLS);
@@ -44,13 +48,13 @@ public class MotrLanguageProvider extends LanguageProvider {
         addSlabTranslations(MotrSlabs.REGISTERED_SILKTOUCH_SLABS);
         addSlabTranslations(MotrSlabs.REGISTERED_COPPER_SLABS);
 
-        addButtonTranslations(MotrBlocks.REGISTERED_BUTTONS);
+        addButtonTranslations(MotrButtons.REGISTERED_BUTTONS);
 
-        addFenceTranslations(MotrBlocks.REGISTERED_FENCES);
+        addFenceTranslations(MotrFenceAndGate.REGISTERED_FENCES);
 
-        addFenceGateTranslations(MotrBlocks.REGISTERED_FENCE_GATES);
+        addFenceGateTranslations(MotrFenceAndGate.REGISTERED_FENCE_GATES);
 
-        addStairTranslations(MotrBlocks.REGISTERED_STANDARD_STAIRS);
+        addStairTranslations(MotrStairs.REGISTERED_STANDARD_STAIRS);
 
         add("itemGroup." + MaterialsOfTheRift.MODID, "MotR");
 
@@ -80,35 +84,35 @@ public class MotrLanguageProvider extends LanguageProvider {
         });
     }
 
-    private void addStairTranslations(Map<String, MotrBlocks.StairInfo> stairMap) {
+    private void addStairTranslations(Map<String, MotrStairs.StairInfo> stairMap) {
         stairMap.forEach((baseName, stairInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Stairs";
             addBlock(stairInfo.stair(), translation);
         });
     }
 
-    private void addQuenchedBlockTranslations(Map<String, MotrBlocks.QuenchedBlockInfo> blockMap) {
+    private void addQuenchedBlockTranslations(Map<String, MotrQuenched.QuenchedBlockInfo> blockMap) {
         blockMap.forEach((baseName, quenchedBlockInfo) -> {
             String translation = "Quenched " + snakeCaseToCapitalizedCase(baseName);
             addBlock(quenchedBlockInfo.block(), translation);
         });
     }
 
-    private void addFenceGateTranslations(Map<String, MotrBlocks.FenceGateInfo> gateMap) {
+    private void addFenceGateTranslations(Map<String, MotrFenceAndGate.FenceGateInfo> gateMap) {
         gateMap.forEach((baseName, gateInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Fence Gate";
             addBlock(gateInfo.fenceGate(), translation);
         });
     }
 
-    private void addFenceTranslations(Map<String, MotrBlocks.FenceInfo> fenceMap) {
+    private void addFenceTranslations(Map<String, MotrFenceAndGate.FenceInfo> fenceMap) {
         fenceMap.forEach((baseName, fenceInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Fence";
             addBlock(fenceInfo.fence(), translation);
         });
     }
 
-    private void addButtonTranslations(Map<String, MotrBlocks.ButtonInfo> buttonMap) {
+    private void addButtonTranslations(Map<String, MotrButtons.ButtonInfo> buttonMap) {
         buttonMap.forEach((baseName, buttonInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Button";
             addBlock(buttonInfo.button(), translation);

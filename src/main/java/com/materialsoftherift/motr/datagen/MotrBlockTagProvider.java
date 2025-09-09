@@ -2,8 +2,12 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -94,6 +98,7 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrSlabs.SOUL_SOIL_SLAB.slab().get())
                 .add(MotrSlabs.MUD_SLAB.slab().get())
                 .add(MotrSlabs.MUDDY_MANGROVE_ROOTS_SLAB.slab().get())
+                .add(MotrQuenched.QUENCHED_FARMLAND.block().get())
 
                 .add(MotrSlabs.WHITE_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrSlabs.LIGHT_GRAY_CONCRETE_POWDER_SLAB.slab().get())
@@ -224,28 +229,28 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
     }
 
     private Block[] getAllButtonBlocks() {
-        return MotrBlocks.REGISTERED_BUTTONS.values()
+        return MotrButtons.REGISTERED_BUTTONS.values()
                 .stream()
                 .map(buttonInfo -> buttonInfo.button().get())
                 .toArray(Block[]::new);
     }
 
     private Block[] getAllFenceBlocks() {
-        return MotrBlocks.REGISTERED_FENCES.values()
+        return MotrFenceAndGate.REGISTERED_FENCES.values()
                 .stream()
                 .map(fenceInfo -> fenceInfo.fence().get())
                 .toArray(Block[]::new);
     }
 
     private Block[] getAllFenceGateBlocks() {
-        return MotrBlocks.REGISTERED_FENCE_GATES.values()
+        return MotrFenceAndGate.REGISTERED_FENCE_GATES.values()
                 .stream()
                 .map(fenceGateInfo -> fenceGateInfo.fenceGate().get())
                 .toArray(Block[]::new);
     }
 
     private Block[] getAllStairBlocks() {
-        return MotrBlocks.REGISTERED_STANDARD_STAIRS.values()
+        return MotrStairs.REGISTERED_STANDARD_STAIRS.values()
                 .stream()
                 .map(stairInfo -> stairInfo.stair().get())
                 .toArray(Block[]::new);
