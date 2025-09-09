@@ -1,6 +1,7 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
@@ -38,8 +39,9 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
 
         MotrWalls.REGISTERED_STANDARD_WALLS.values().forEach(wallInfo -> dropSelf(wallInfo.wall().get()));
         MotrBlocks.REGISTERED_BUTTONS.values().forEach(buttonInfo -> dropSelf(buttonInfo.button().get()));
-        MotrBlocks.REGISTERED_FENCES.values().forEach(fenceInfo -> dropSelf(fenceInfo.fence().get()));
-        MotrBlocks.REGISTERED_FENCE_GATES.values().forEach(fenceGateInfo -> dropSelf(fenceGateInfo.fenceGate().get()));
+        MotrFenceAndGate.REGISTERED_FENCES.values().forEach(fenceInfo -> dropSelf(fenceInfo.fence().get()));
+        MotrFenceAndGate.REGISTERED_FENCE_GATES.values()
+                .forEach(fenceGateInfo -> dropSelf(fenceGateInfo.fenceGate().get()));
         MotrBlocks.REGISTERED_STANDARD_STAIRS.values().forEach(stairInfo -> dropSelf(stairInfo.stair().get()));
 
         MotrSlabs.REGISTERED_GLASS_SLABS.values()
@@ -73,7 +75,9 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 MotrSlabs.REGISTERED_GLASS_SLABS.values().stream().map(info -> info.slab().get()),
                 MotrSlabs.REGISTERED_SILKTOUCH_SLABS.values().stream().map(info -> info.slab().get()),
                 MotrWalls.REGISTERED_STANDARD_WALLS.values().stream().map(i -> (Block) i.wall().get()),
-                MotrWalls.REGISTERED_GLASS_WALLS.values().stream().map(i -> (Block) i.wall().get())
+                MotrWalls.REGISTERED_GLASS_WALLS.values().stream().map(i -> (Block) i.wall().get()),
+                MotrFenceAndGate.REGISTERED_FENCES.values().stream().map(i -> (Block) i.fence().get()),
+                MotrFenceAndGate.REGISTERED_FENCE_GATES.values().stream().map(i -> (Block) i.fenceGate().get())
         ).flatMap(s -> s);
 
         return all::iterator;

@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
@@ -233,14 +234,14 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
     }
 
     private Block[] getAllFenceBlocks() {
-        return MotrBlocks.REGISTERED_FENCES.values()
+        return MotrFenceAndGate.REGISTERED_FENCES.values()
                 .stream()
                 .map(fenceInfo -> fenceInfo.fence().get())
                 .toArray(Block[]::new);
     }
 
     private Block[] getAllFenceGateBlocks() {
-        return MotrBlocks.REGISTERED_FENCE_GATES.values()
+        return MotrFenceAndGate.REGISTERED_FENCE_GATES.values()
                 .stream()
                 .map(fenceGateInfo -> fenceGateInfo.fenceGate().get())
                 .toArray(Block[]::new);

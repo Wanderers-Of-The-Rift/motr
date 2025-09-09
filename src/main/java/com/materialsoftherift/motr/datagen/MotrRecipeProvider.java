@@ -1,6 +1,7 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
@@ -139,7 +140,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_FENCES.forEach((id, fenceInfo) -> {
+        MotrFenceAndGate.REGISTERED_FENCES.forEach((id, fenceInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, fenceInfo.fence().get(), 3)
                     .pattern("#S#")
                     .pattern("#S#")
@@ -157,7 +158,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_FENCE_GATES.forEach((id, fenceGateInfo) -> {
+        MotrFenceAndGate.REGISTERED_FENCE_GATES.forEach((id, fenceGateInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, fenceGateInfo.fenceGate().get(), 3)
                     .pattern("S#S")
                     .pattern("S#S")

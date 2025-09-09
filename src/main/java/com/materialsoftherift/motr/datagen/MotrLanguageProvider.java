@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
@@ -47,9 +48,9 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addButtonTranslations(MotrBlocks.REGISTERED_BUTTONS);
 
-        addFenceTranslations(MotrBlocks.REGISTERED_FENCES);
+        addFenceTranslations(MotrFenceAndGate.REGISTERED_FENCES);
 
-        addFenceGateTranslations(MotrBlocks.REGISTERED_FENCE_GATES);
+        addFenceGateTranslations(MotrFenceAndGate.REGISTERED_FENCE_GATES);
 
         addStairTranslations(MotrBlocks.REGISTERED_STANDARD_STAIRS);
 
@@ -95,14 +96,14 @@ public class MotrLanguageProvider extends LanguageProvider {
         });
     }
 
-    private void addFenceGateTranslations(Map<String, MotrBlocks.FenceGateInfo> gateMap) {
+    private void addFenceGateTranslations(Map<String, MotrFenceAndGate.FenceGateInfo> gateMap) {
         gateMap.forEach((baseName, gateInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Fence Gate";
             addBlock(gateInfo.fenceGate(), translation);
         });
     }
 
-    private void addFenceTranslations(Map<String, MotrBlocks.FenceInfo> fenceMap) {
+    private void addFenceTranslations(Map<String, MotrFenceAndGate.FenceInfo> fenceMap) {
         fenceMap.forEach((baseName, fenceInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Fence";
             addBlock(fenceInfo.fence(), translation);

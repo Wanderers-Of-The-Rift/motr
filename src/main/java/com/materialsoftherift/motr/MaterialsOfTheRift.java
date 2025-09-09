@@ -3,6 +3,7 @@ package com.materialsoftherift.motr;
 import com.materialsoftherift.motr.init.MotrBlockEntities;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrCreativeTabs;
+import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrItems;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
@@ -48,6 +49,7 @@ public class MaterialsOfTheRift {
         MotrSlabs.BLOCKS.register(modEventBus);
         MotrWalls.BLOCKS.register(modEventBus);
         MotrQuenched.BLOCKS.register(modEventBus);
+        MotrFenceAndGate.BLOCKS.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
