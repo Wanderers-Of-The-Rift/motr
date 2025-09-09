@@ -3,6 +3,7 @@ package com.materialsoftherift.motr.datagen;
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderLookup;
@@ -94,6 +95,7 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
                 .add(MotrSlabs.SOUL_SOIL_SLAB.slab().get())
                 .add(MotrSlabs.MUD_SLAB.slab().get())
                 .add(MotrSlabs.MUDDY_MANGROVE_ROOTS_SLAB.slab().get())
+                .add(MotrQuenched.QUENCHED_FARMLAND.block().get())
 
                 .add(MotrSlabs.WHITE_CONCRETE_POWDER_SLAB.slab().get())
                 .add(MotrSlabs.LIGHT_GRAY_CONCRETE_POWDER_SLAB.slab().get())

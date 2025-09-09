@@ -3,6 +3,7 @@ package com.materialsoftherift.motr.datagen;
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,7 +33,7 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addNoGravTranslations(MotrNoGrav.REGISTERED_NOGRAV_BLOCKS);
 
-        addQuenchedBlockTranslations(MotrBlocks.REGISTERED_QUENCHED_BLOCKS);
+        addQuenchedBlockTranslations(MotrQuenched.REGISTERED_QUENCHED_BLOCKS);
 
         addWallTranslations(MotrWalls.REGISTERED_STANDARD_WALLS);
         addWallTranslations(MotrWalls.REGISTERED_GLASS_WALLS);
@@ -87,7 +88,7 @@ public class MotrLanguageProvider extends LanguageProvider {
         });
     }
 
-    private void addQuenchedBlockTranslations(Map<String, MotrBlocks.QuenchedBlockInfo> blockMap) {
+    private void addQuenchedBlockTranslations(Map<String, MotrQuenched.QuenchedBlockInfo> blockMap) {
         blockMap.forEach((baseName, quenchedBlockInfo) -> {
             String translation = "Quenched " + snakeCaseToCapitalizedCase(baseName);
             addBlock(quenchedBlockInfo.block(), translation);

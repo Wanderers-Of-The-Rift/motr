@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderGetter;
@@ -44,7 +45,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach((id, blockInfo) -> {
+        MotrQuenched.REGISTERED_QUENCHED_BLOCKS.forEach((id, blockInfo) -> {
             ItemLike quenchedBlock = blockInfo.block().get();
             ItemLike vanillaBlock = blockInfo.getBaseItem();
             if (vanillaBlock == Items.AIR) {

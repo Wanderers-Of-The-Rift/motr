@@ -3,6 +3,7 @@ package com.materialsoftherift.motr.datagen;
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
 import com.materialsoftherift.motr.init.MotrNoGrav;
+import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -26,7 +27,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CoralFanBlock;
+import net.minecraft.world.level.block.KelpBlock;
+import net.minecraft.world.level.block.KelpPlantBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
+import net.minecraft.world.level.block.SeagrassBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -64,53 +68,6 @@ public class MotrModelProvider extends ModelProvider {
         MotrNoGrav.REGISTERED_NOGRAV_BLOCKS.forEach((textureName, noGravInfo) -> {
             registerNoGravModel(blockModels, itemModels, noGravInfo, textureName);
         });
-
-        MotrBlocks.REGISTERED_QUENCHED_BLOCKS.forEach(
-                (texture, blockInfo) -> {
-                    if (blockInfo.baseBlock() instanceof CoralFanBlock) {
-                        TexturedModel texturedmodel = TexturedModel.CORAL_FAN.get(blockInfo.baseBlock());
-                        ResourceLocation resourcelocation = texturedmodel.create(blockInfo.baseBlock(),
-                                blockModels.modelOutput);
-
-                        blockModels.blockStateOutput.accept(
-                                BlockModelGenerators.createSimpleBlock(blockInfo.block().get(), resourcelocation));
-
-                        // Apply dot overlay
-                        ResourceLocation defaultModel = ModelLocationUtils
-                                .getModelLocation(blockInfo.baseBlock().asItem());
-                        addWithOverlay(blockInfo.block().asItem(), defaultModel, DOT_TEXTURE, itemModels);
-                        return;
-                    }
-                    if (blockInfo.baseBlock() instanceof SeaPickleBlock) {
-                        // Apply dot overlay
-                        addWithOverlay(blockInfo.block().asItem(),
-                                ModelLocationUtils.getModelLocation(blockInfo.baseBlock()), DOT_TEXTURE, itemModels);
-
-                        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(blockInfo.block().get())
-                                .with(PropertyDispatch.property(SeaPickleBlock.PICKLES)
-                                        .select(1, List.of(BlockModelGenerators.createRotatedVariants(
-                                                ModelLocationUtils.getModelLocation(Blocks.SEA_PICKLE))))
-                                        .select(2,
-                                                List.of(BlockModelGenerators.createRotatedVariants(ResourceLocation
-                                                        .withDefaultNamespace("block/two_sea_pickles"))))
-                                        .select(3,
-                                                List.of(BlockModelGenerators.createRotatedVariants(ResourceLocation
-                                                        .withDefaultNamespace("block/three_sea_pickles"))))
-                                        .select(4,
-                                                List.of(BlockModelGenerators.createRotatedVariants(ResourceLocation
-                                                        .withDefaultNamespace("block/four_sea_pickles"))))
-                                )
-                        );
-                        return;
-                    }
-                    // Apply dot overlay
-                    addWithOverlay(blockInfo.block().asItem(),
-                            ModelLocationUtils.getModelLocation(blockInfo.baseBlock()), DOT_TEXTURE, itemModels);
-
-                    ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(blockInfo.baseBlock());
-                    blockModels.blockStateOutput
-                            .accept(BlockModelGenerators.createSimpleBlock(blockInfo.block().get(), vanillaModel));
-                });
 
         blockModels.createTrivialBlock(MotrBlocks.HAY_CARPET.get(), TexturedModel.CARPET.updateTexture(
                 mapping -> mapping.put(TextureSlot.WOOL, ResourceLocation.withDefaultNamespace("block/hay_block_top"))
@@ -231,6 +188,64 @@ public class MotrModelProvider extends ModelProvider {
         MotrBlocks.REGISTERED_STANDARD_STAIRS.forEach((textureName, stairInfo) -> {
             registerStandardStairModel(blockModels, stairInfo.stair().get(), textureName);
         });
+
+        MotrQuenched.REGISTERED_QUENCHED_BLOCKS.forEach((texture, blockInfo) -> {
+
+            Block base = blockInfo.baseBlock();
+            Block quenched = blockInfo.block().get();
+
+            if (base instanceof CoralFanBlock) {
+                TexturedModel texturedModel = TexturedModel.CORAL_FAN.get(base);
+                ResourceLocation resLoc = texturedModel.create(base, blockModels.modelOutput);
+
+                blockModels.blockStateOutput.accept(
+                        BlockModelGenerators.createSimpleBlock(quenched, resLoc)
+                );
+
+                ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(base.asItem());
+                addWithOverlay(quenched.asItem(), defaultModel, DOT_TEXTURE, itemModels);
+                return;
+            }
+
+            if (base instanceof SeaPickleBlock) {
+                addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
+
+                blockModels.blockStateOutput.accept(
+                        MultiVariantGenerator.multiVariant(quenched)
+                                .with(PropertyDispatch.property(SeaPickleBlock.PICKLES)
+                                        .select(1, List.of(BlockModelGenerators.createRotatedVariants(
+                                                ResourceLocation.withDefaultNamespace("block/sea_pickle"))))
+                                        .select(2, List.of(BlockModelGenerators.createRotatedVariants(
+                                                ResourceLocation.withDefaultNamespace("block/two_sea_pickles"))))
+                                        .select(3, List.of(BlockModelGenerators.createRotatedVariants(
+                                                ResourceLocation.withDefaultNamespace("block/three_sea_pickles"))))
+                                        .select(4, List.of(BlockModelGenerators.createRotatedVariants(
+                                                ResourceLocation.withDefaultNamespace("block/four_sea_pickles"))))
+                                )
+                );
+                return;
+            }
+
+            if (base instanceof KelpBlock || base instanceof KelpPlantBlock || base instanceof SeagrassBlock
+                    || base == Blocks.SUGAR_CANE) {
+
+                ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(base);
+                blockModels.blockStateOutput.accept(
+                        BlockModelGenerators.createSimpleBlock(quenched, vanillaModel)
+                );
+
+                addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
+                return;
+            }
+
+            addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
+
+            ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(base);
+            blockModels.blockStateOutput.accept(
+                    BlockModelGenerators.createSimpleBlock(quenched, vanillaModel)
+            );
+        });
+
     }
 
     private void registerNoGravModel(
