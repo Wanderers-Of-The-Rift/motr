@@ -5,6 +5,7 @@ import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -42,7 +43,7 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
         MotrFenceAndGate.REGISTERED_FENCES.values().forEach(fenceInfo -> dropSelf(fenceInfo.fence().get()));
         MotrFenceAndGate.REGISTERED_FENCE_GATES.values()
                 .forEach(fenceGateInfo -> dropSelf(fenceGateInfo.fenceGate().get()));
-        MotrBlocks.REGISTERED_STANDARD_STAIRS.values().forEach(stairInfo -> dropSelf(stairInfo.stair().get()));
+        MotrStairs.REGISTERED_STANDARD_STAIRS.values().forEach(stairInfo -> dropSelf(stairInfo.stair().get()));
 
         MotrSlabs.REGISTERED_GLASS_SLABS.values()
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSilkTouchOnlyTable(slabInfo.slab().get()))
@@ -77,7 +78,8 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 MotrWalls.REGISTERED_STANDARD_WALLS.values().stream().map(i -> (Block) i.wall().get()),
                 MotrWalls.REGISTERED_GLASS_WALLS.values().stream().map(i -> (Block) i.wall().get()),
                 MotrFenceAndGate.REGISTERED_FENCES.values().stream().map(i -> (Block) i.fence().get()),
-                MotrFenceAndGate.REGISTERED_FENCE_GATES.values().stream().map(i -> (Block) i.fenceGate().get())
+                MotrFenceAndGate.REGISTERED_FENCE_GATES.values().stream().map(i -> (Block) i.fenceGate().get()),
+                MotrStairs.REGISTERED_STANDARD_STAIRS.values().stream().map(i -> (Block) i.stair().get())
         ).flatMap(s -> s);
 
         return all::iterator;

@@ -6,6 +6,7 @@ import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -186,7 +187,7 @@ public class MotrModelProvider extends ModelProvider {
             registerFenceGateModel(blockModels, itemModels, fenceGateInfo.fenceGate().get(), textureName);
         });
 
-        MotrBlocks.REGISTERED_STANDARD_STAIRS.forEach((textureName, stairInfo) -> {
+        MotrStairs.REGISTERED_STANDARD_STAIRS.forEach((textureName, stairInfo) -> {
             registerStandardStairModel(blockModels, stairInfo.stair().get(), textureName);
         });
 

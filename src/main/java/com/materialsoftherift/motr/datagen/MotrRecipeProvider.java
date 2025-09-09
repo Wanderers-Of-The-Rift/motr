@@ -5,6 +5,7 @@ import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -168,7 +169,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_STANDARD_STAIRS.forEach((id, stairInfo) -> {
+        MotrStairs.REGISTERED_STANDARD_STAIRS.forEach((id, stairInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, stairInfo.stair().get(), 4)
                     .pattern("#  ")
                     .pattern("## ")

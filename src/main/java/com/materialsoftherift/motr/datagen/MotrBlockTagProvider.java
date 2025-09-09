@@ -6,6 +6,7 @@ import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -248,7 +249,7 @@ public class MotrBlockTagProvider extends BlockTagsProvider {
     }
 
     private Block[] getAllStairBlocks() {
-        return MotrBlocks.REGISTERED_STANDARD_STAIRS.values()
+        return MotrStairs.REGISTERED_STANDARD_STAIRS.values()
                 .stream()
                 .map(stairInfo -> stairInfo.stair().get())
                 .toArray(Block[]::new);

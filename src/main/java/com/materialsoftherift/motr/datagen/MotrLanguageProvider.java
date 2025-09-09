@@ -6,6 +6,7 @@ import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
 import com.materialsoftherift.motr.init.MotrSlabs;
+import com.materialsoftherift.motr.init.MotrStairs;
 import com.materialsoftherift.motr.init.MotrWalls;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -52,7 +53,7 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addFenceGateTranslations(MotrFenceAndGate.REGISTERED_FENCE_GATES);
 
-        addStairTranslations(MotrBlocks.REGISTERED_STANDARD_STAIRS);
+        addStairTranslations(MotrStairs.REGISTERED_STANDARD_STAIRS);
 
         add("itemGroup." + MaterialsOfTheRift.MODID, "MotR");
 
@@ -82,7 +83,7 @@ public class MotrLanguageProvider extends LanguageProvider {
         });
     }
 
-    private void addStairTranslations(Map<String, MotrBlocks.StairInfo> stairMap) {
+    private void addStairTranslations(Map<String, MotrStairs.StairInfo> stairMap) {
         stairMap.forEach((baseName, stairInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Stairs";
             addBlock(stairInfo.stair(), translation);
