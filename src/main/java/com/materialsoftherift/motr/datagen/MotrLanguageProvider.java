@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
 import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
@@ -47,7 +48,7 @@ public class MotrLanguageProvider extends LanguageProvider {
         addSlabTranslations(MotrSlabs.REGISTERED_SILKTOUCH_SLABS);
         addSlabTranslations(MotrSlabs.REGISTERED_COPPER_SLABS);
 
-        addButtonTranslations(MotrBlocks.REGISTERED_BUTTONS);
+        addButtonTranslations(MotrButtons.REGISTERED_BUTTONS);
 
         addFenceTranslations(MotrFenceAndGate.REGISTERED_FENCES);
 
@@ -111,7 +112,7 @@ public class MotrLanguageProvider extends LanguageProvider {
         });
     }
 
-    private void addButtonTranslations(Map<String, MotrBlocks.ButtonInfo> buttonMap) {
+    private void addButtonTranslations(Map<String, MotrButtons.ButtonInfo> buttonMap) {
         buttonMap.forEach((baseName, buttonInfo) -> {
             String translation = snakeCaseToCapitalizedCase(baseName) + " Button";
             addBlock(buttonInfo.button(), translation);

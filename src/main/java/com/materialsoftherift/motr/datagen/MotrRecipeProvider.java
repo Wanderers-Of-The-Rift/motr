@@ -1,6 +1,7 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
 import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
@@ -151,7 +152,7 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .save(this.output);
         });
 
-        MotrBlocks.REGISTERED_BUTTONS.forEach((id, buttonInfo) -> {
+        MotrButtons.REGISTERED_BUTTONS.forEach((id, buttonInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, buttonInfo.button().get(), 1)
                     .pattern("#")
                     .define('#', buttonInfo.getBaseItem())

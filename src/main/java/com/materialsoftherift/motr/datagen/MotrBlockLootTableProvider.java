@@ -1,6 +1,7 @@
 package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
 import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
@@ -39,7 +40,7 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSlabItemTable(slabInfo.slab().get())));
 
         MotrWalls.REGISTERED_STANDARD_WALLS.values().forEach(wallInfo -> dropSelf(wallInfo.wall().get()));
-        MotrBlocks.REGISTERED_BUTTONS.values().forEach(buttonInfo -> dropSelf(buttonInfo.button().get()));
+        MotrButtons.REGISTERED_BUTTONS.values().forEach(buttonInfo -> dropSelf(buttonInfo.button().get()));
         MotrFenceAndGate.REGISTERED_FENCES.values().forEach(fenceInfo -> dropSelf(fenceInfo.fence().get()));
         MotrFenceAndGate.REGISTERED_FENCE_GATES.values()
                 .forEach(fenceGateInfo -> dropSelf(fenceGateInfo.fenceGate().get()));
@@ -79,7 +80,8 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 MotrWalls.REGISTERED_GLASS_WALLS.values().stream().map(i -> (Block) i.wall().get()),
                 MotrFenceAndGate.REGISTERED_FENCES.values().stream().map(i -> (Block) i.fence().get()),
                 MotrFenceAndGate.REGISTERED_FENCE_GATES.values().stream().map(i -> (Block) i.fenceGate().get()),
-                MotrStairs.REGISTERED_STANDARD_STAIRS.values().stream().map(i -> (Block) i.stair().get())
+                MotrStairs.REGISTERED_STANDARD_STAIRS.values().stream().map(i -> (Block) i.stair().get()),
+                MotrButtons.REGISTERED_BUTTONS.values().stream().map(info -> (Block) info.button().get())
         ).flatMap(s -> s);
 
         return all::iterator;

@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.datagen;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrBlocks;
+import com.materialsoftherift.motr.init.MotrButtons;
 import com.materialsoftherift.motr.init.MotrFenceAndGate;
 import com.materialsoftherift.motr.init.MotrNoGrav;
 import com.materialsoftherift.motr.init.MotrQuenched;
@@ -175,7 +176,7 @@ public class MotrModelProvider extends ModelProvider {
             );
         });
 
-        MotrBlocks.REGISTERED_BUTTONS.forEach((textureName, buttonInfo) -> {
+        MotrButtons.REGISTERED_BUTTONS.forEach((textureName, buttonInfo) -> {
             registerButtonModel(blockModels, itemModels, buttonInfo.button().get(), textureName);
         });
 
