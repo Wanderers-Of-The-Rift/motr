@@ -267,7 +267,7 @@ public class MotrQuenched {
 
         @Override
         public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-            return this.defaultBlockState();
+            return super.getStateForPlacement(context);
         }
 
         @Override
