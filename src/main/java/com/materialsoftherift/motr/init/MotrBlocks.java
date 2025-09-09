@@ -35,7 +35,7 @@ public class MotrBlocks {
     }
 
     private static DeferredBlock<CarpetBlock> registerCarpet(String id, Block baseBlock) {
-        return registerDevBlock(id, () -> new CarpetBlock(
+        return registerBlock(id, () -> new CarpetBlock(
                 BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id))
         ));
     }
