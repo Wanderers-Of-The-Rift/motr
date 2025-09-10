@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class QuenchedBlockItem extends BlockItem {
+public class UnboundBlockItem extends BlockItem {
 
-    public QuenchedBlockItem(Block block, Item.Properties properties) {
+    public UnboundBlockItem(Block block, Item.Properties properties) {
         super(block, properties);
     }
 
@@ -22,7 +22,7 @@ public class QuenchedBlockItem extends BlockItem {
             @NotNull Item.TooltipContext tooltipContext,
             @NotNull List<Component> list,
             @NotNull TooltipFlag flag) {
-        list.add(Component.translatable("item.motr.does_not_require_water"));
+        list.add(Component.translatable("item.motr.unbound_placement"));
         super.appendHoverText(item, tooltipContext, list, flag);
     }
 

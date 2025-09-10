@@ -1,13 +1,6 @@
 package com.materialsoftherift.motr.datagen;
 
-import com.materialsoftherift.motr.init.MotrBlocks;
-import com.materialsoftherift.motr.init.MotrButtons;
-import com.materialsoftherift.motr.init.MotrFenceAndGate;
-import com.materialsoftherift.motr.init.MotrNoGrav;
-import com.materialsoftherift.motr.init.MotrQuenched;
-import com.materialsoftherift.motr.init.MotrSlabs;
-import com.materialsoftherift.motr.init.MotrStairs;
-import com.materialsoftherift.motr.init.MotrWalls;
+import com.materialsoftherift.motr.init.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -29,6 +22,8 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
         MotrNoGrav.REGISTERED_NOGRAV_BLOCKS.values().forEach(noGravInfo -> dropSelf(noGravInfo.block().get()));
 
         MotrQuenched.REGISTERED_QUENCHED_BLOCKS.values().forEach(blockInfo -> dropSelf(blockInfo.block().get()));
+
+        MotrUnbound.REGISTERED_UNBOUND_BLOCKS.values().forEach(blockInfo -> dropSelf(blockInfo.block().get()));
 
         MotrSlabs.REGISTERED_STANDARD_SLABS.values()
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSlabItemTable(slabInfo.slab().get())));
@@ -70,6 +65,7 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 MotrBlocks.BLOCKS.getEntries().stream().map(Holder::value),
                 MotrNoGrav.BLOCKS.getEntries().stream().map(Holder::value),
                 MotrQuenched.BLOCKS.getEntries().stream().map(Holder::value),
+                MotrUnbound.BLOCKS.getEntries().stream().map(Holder::value), // Added this line!
                 MotrSlabs.REGISTERED_STANDARD_SLABS.values().stream().map(info -> info.slab().get()),
                 MotrSlabs.REGISTERED_DIRECTIONAL_SLABS.values().stream().map(info -> info.slab().get()),
                 MotrSlabs.REGISTERED_TRIMM_SLABS.values().stream().map(info -> info.slab().get()),

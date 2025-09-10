@@ -1,13 +1,6 @@
 package com.materialsoftherift.motr.datagen;
 
-import com.materialsoftherift.motr.init.MotrBlocks;
-import com.materialsoftherift.motr.init.MotrButtons;
-import com.materialsoftherift.motr.init.MotrFenceAndGate;
-import com.materialsoftherift.motr.init.MotrNoGrav;
-import com.materialsoftherift.motr.init.MotrQuenched;
-import com.materialsoftherift.motr.init.MotrSlabs;
-import com.materialsoftherift.motr.init.MotrStairs;
-import com.materialsoftherift.motr.init.MotrWalls;
+import com.materialsoftherift.motr.init.*;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +13,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -75,6 +69,32 @@ public class MotrRecipeProvider extends RecipeProvider {
                     .unlockedBy("has_" + id, has(vanillaBlock))
                     .save(this.output, id + "_from_quenched");
         });
+
+        MotrUnbound.REGISTERED_UNBOUND_BLOCKS.forEach((id, blockInfo) -> {
+            ItemLike unboundBlock = blockInfo.block().get();
+            ItemLike vanillaBlock = blockInfo.getBaseItem();
+
+            ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.BUILDING_BLOCKS, unboundBlock, 1)
+                    .requires(vanillaBlock)
+                    .requires(Items.HANGING_ROOTS)
+                    .unlockedBy("has_" + id, has(vanillaBlock))
+                    .save(this.output, "unbound_" + id + "_from_hanging_roots");
+
+            ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, unboundBlock, 8)
+                    .pattern("###")
+                    .pattern("#R#")
+                    .pattern("###")
+                    .define('#', vanillaBlock)
+                    .define('R', Blocks.ROOTED_DIRT)
+                    .unlockedBy("has_" + id, has(vanillaBlock))
+                    .save(this.output, "unbound_" + id + "_from_rooted_dirt");
+
+            ShapelessRecipeBuilder.shapeless(getter, RecipeCategory.BUILDING_BLOCKS, vanillaBlock, 1)
+                    .requires(unboundBlock)
+                    .unlockedBy("has_" + id, has(vanillaBlock))
+                    .save(this.output, id + "_from_unbound");
+        });
+
 
         MotrSlabs.REGISTERED_STANDARD_SLABS.forEach((id, slabInfo) -> {
             ShapedRecipeBuilder.shaped(getter, RecipeCategory.BUILDING_BLOCKS, slabInfo.slab().get(), 6)

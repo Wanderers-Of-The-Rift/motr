@@ -60,6 +60,9 @@ public class MotrLanguageProvider extends LanguageProvider {
 
         addBlock(MotrBlocks.HAY_CARPET, "Hay Carpet");
 
+        add("item.motr.ignores_gravity", "Ignores Gravity");
+        add("item.motr.does_not_require_water", "Does not require water");
+        add("item.motr.unbound_placement", "Can be placed on any surface");
     }
 
     private static @NotNull String getTranslationString(Block block) {

@@ -2,6 +2,7 @@ package com.materialsoftherift.motr.event;
 
 import com.materialsoftherift.motr.MaterialsOfTheRift;
 import com.materialsoftherift.motr.init.MotrQuenched;
+import com.materialsoftherift.motr.init.MotrUnbound;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -18,6 +19,9 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         MotrQuenched.REGISTERED_QUENCHED_BLOCKS
+                .forEach((name, info) -> ItemBlockRenderTypes.setRenderLayer(info.block().get(), RenderType.cutout()));
+
+        MotrUnbound.REGISTERED_UNBOUND_BLOCKS
                 .forEach((name, info) -> ItemBlockRenderTypes.setRenderLayer(info.block().get(), RenderType.cutout()));
     }
 
