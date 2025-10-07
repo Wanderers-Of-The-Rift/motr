@@ -365,6 +365,22 @@ public class MotrQuenched {
                     BlockBehaviour.Properties.ofFullCopy(Blocks.HORN_CORAL_FAN)
                             .setId(blockId("quenched_horn_coral_fan"))));
 
+    public static final QuenchedBlockInfo QUENCHED_TUBE_CORAL = registerQuenchedBlock("quenched_tube_coral",
+            Blocks.TUBE_CORAL, () -> new QuenchedCoralFanBlock(Blocks.TUBE_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.TUBE_CORAL).setId(blockId("quenched_tube_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_BRAIN_CORAL = registerQuenchedBlock("quenched_brain_coral",
+            Blocks.BRAIN_CORAL, () -> new QuenchedCoralFanBlock(Blocks.BRAIN_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BRAIN_CORAL).setId(blockId("quenched_brain_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_BUBBLE_CORAL = registerQuenchedBlock("quenched_bubble_coral",
+            Blocks.BUBBLE_CORAL, () -> new QuenchedCoralFanBlock(Blocks.BUBBLE_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BUBBLE_CORAL).setId(blockId("quenched_bubble_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_FIRE_CORAL = registerQuenchedBlock("quenched_fire_coral",
+            Blocks.FIRE_CORAL, () -> new QuenchedCoralFanBlock(Blocks.FIRE_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE_CORAL).setId(blockId("quenched_fire_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_HORN_CORAL = registerQuenchedBlock("quenched_horn_coral",
+            Blocks.HORN_CORAL, () -> new QuenchedCoralFanBlock(Blocks.HORN_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.HORN_CORAL).setId(blockId("quenched_horn_coral"))));
+
     public static final QuenchedBlockInfo QUENCHED_FARMLAND = registerQuenchedBlock("quenched_farmland",
             Blocks.FARMLAND, () -> new QuenchedFarmlandBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.FARMLAND).setId(blockId("quenched_farmland"))));
@@ -375,12 +391,19 @@ public class MotrQuenched {
     public static final Map<String, QuenchedBlockInfo> REGISTERED_QUENCHED_BLOCKS = Map.ofEntries(
             Map.entry("kelp", QUENCHED_KELP), Map.entry("seagrass", QUENCHED_SEAGRASS),
             Map.entry("kelp_plant", QUENCHED_KELP_PLANT), Map.entry("sea_pickle", QUENCHED_SEA_PICKLE),
-            Map.entry("tube_coral", QUENCHED_TUBE_CORAL_BLOCK), Map.entry("brain_coral", QUENCHED_BRAIN_CORAL_BLOCK),
-            Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL_BLOCK), Map.entry("fire_coral", QUENCHED_FIRE_CORAL_BLOCK),
-            Map.entry("horn_coral", QUENCHED_HORN_CORAL_BLOCK), Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
+            Map.entry("tube_coral_block", QUENCHED_TUBE_CORAL_BLOCK),
+            Map.entry("brain_coral_block", QUENCHED_BRAIN_CORAL_BLOCK),
+            Map.entry("bubble_coral_block", QUENCHED_BUBBLE_CORAL_BLOCK),
+            Map.entry("fire_coral_block", QUENCHED_FIRE_CORAL_BLOCK),
+            Map.entry("horn_coral_block", QUENCHED_HORN_CORAL_BLOCK),
+            Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
             Map.entry("brain_coral_fan", QUENCHED_BRAIN_CORAL_FAN),
             Map.entry("bubble_coral_fan", QUENCHED_BUBBLE_CORAL_FAN),
             Map.entry("fire_coral_fan", QUENCHED_FIRE_CORAL_FAN), Map.entry("horn_coral_fan", QUENCHED_HORN_CORAL_FAN),
+            Map.entry("tube_coral", QUENCHED_TUBE_CORAL), Map.entry("brain_coral", QUENCHED_BRAIN_CORAL),
+            Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL), Map.entry("fire_coral", QUENCHED_FIRE_CORAL),
+            Map.entry("horn_coral", QUENCHED_HORN_CORAL),
+
             Map.entry("farmland", QUENCHED_FARMLAND), Map.entry("sugar_cane", QUENCHED_SUGAR_CANE)
     );
 

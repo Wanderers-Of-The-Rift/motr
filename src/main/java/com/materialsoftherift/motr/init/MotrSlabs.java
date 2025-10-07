@@ -289,9 +289,8 @@ public class MotrSlabs {
             Map.entry("raw_iron_block", RAW_IRON_BLOCK_SLAB), Map.entry("raw_gold_block", RAW_GOLD_BLOCK_SLAB),
             Map.entry("pale_moss_block", PALE_MOSS_BLOCK_SLAB), Map.entry("packed_ice", PACKED_ICE_SLAB),
             Map.entry("nether_wart_block", NETHER_WART_BLOCK_SLAB), Map.entry("mud", MUD_SLAB),
-            Map.entry("moss_block", MOSS_BLOCK_SLAB), Map.entry("ice", ICE_SLAB),
-            Map.entry("gilded_blackstone", GILDED_BLACKSTONE_SLAB), Map.entry("dirt", DIRT_SLAB),
-            Map.entry("clay", CLAY_SLAB), Map.entry("coarse_dirt", COARSE_DIRT_SLAB),
+            Map.entry("moss_block", MOSS_BLOCK_SLAB), Map.entry("gilded_blackstone", GILDED_BLACKSTONE_SLAB),
+            Map.entry("dirt", DIRT_SLAB), Map.entry("clay", CLAY_SLAB), Map.entry("coarse_dirt", COARSE_DIRT_SLAB),
             Map.entry("blue_ice", BLUE_ICE_SLAB), Map.entry("resin_block", RESIN_BLOCK_SLAB),
             Map.entry("magma", MAGMA_SLAB)
 
@@ -321,7 +320,7 @@ public class MotrSlabs {
             Map.entry("blue_stained_glass", BLUE_STAINED_GLASS_SLAB),
             Map.entry("purple_stained_glass", PURPLE_STAINED_GLASS_SLAB),
             Map.entry("magenta_stained_glass", MAGENTA_STAINED_GLASS_SLAB),
-            Map.entry("pink_stained_glass", PINK_STAINED_GLASS_SLAB)
+            Map.entry("pink_stained_glass", PINK_STAINED_GLASS_SLAB), Map.entry("ice", ICE_SLAB)
     );
 
     public static final Map<String, SlabInfo> REGISTERED_DIRECTIONAL_SLABS = Map.ofEntries(

@@ -50,7 +50,7 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
                 .forEach(slabInfo -> add(slabInfo.slab().get(), createSilkTouchOnlyTable(slabInfo.slab().get()))
                 );
         MotrSlabs.REGISTERED_SILKTOUCH_SLABS.values()
-                .forEach(slabInfo -> add(slabInfo.slab().get(), createSilkTouchOnlyTable(slabInfo.slab().get()))
+                .forEach(slabInfo -> add(slabInfo.slab().get(), createSlabItemTable(slabInfo.slab().get()))
                 );
 
         // glass slab drops broken, need to somehow combine createSlabItemTable and createSilkTouchOnlyTable
@@ -86,5 +86,4 @@ public class MotrBlockLootTableProvider extends BlockLootSubProvider {
 
         return all::iterator;
     }
-
 }
