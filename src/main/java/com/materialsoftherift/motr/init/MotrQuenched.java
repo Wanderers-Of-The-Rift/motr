@@ -145,6 +145,27 @@ public class MotrQuenched {
         }
 
         @Override
+        protected void randomTick(
+                @NotNull BlockState state,
+                @NotNull ServerLevel level,
+                @NotNull BlockPos pos,
+                @NotNull RandomSource random) {
+        }
+
+        @Override
+        protected boolean isRandomlyTicking(@NotNull BlockState state) {
+            return false;
+        }
+
+        @Override
+        public void performBonemeal(
+                @NotNull ServerLevel level,
+                @NotNull RandomSource random,
+                @NotNull BlockPos pos,
+                @NotNull BlockState state) {
+        }
+
+        @Override
         protected boolean canGrowInto(@NotNull BlockState state) {
             return true;
         }
@@ -184,6 +205,19 @@ public class MotrQuenched {
 
         public QuenchedKelpPlantBlock(Properties properties) {
             super(properties);
+        }
+
+        @Override
+        protected void randomTick(
+                @NotNull BlockState state,
+                @NotNull ServerLevel level,
+                @NotNull BlockPos pos,
+                @NotNull RandomSource random) {
+        }
+
+        @Override
+        protected boolean isRandomlyTicking(@NotNull BlockState state) {
+            return false;
         }
 
         @Override
