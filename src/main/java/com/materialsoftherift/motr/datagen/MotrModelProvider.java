@@ -30,10 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CoralFanBlock;
-import net.minecraft.world.level.block.KelpBlock;
-import net.minecraft.world.level.block.KelpPlantBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
-import net.minecraft.world.level.block.SeagrassBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -200,19 +197,10 @@ public class MotrModelProvider extends ModelProvider {
             if (base instanceof CoralFanBlock) {
                 TexturedModel texturedModel = TexturedModel.CORAL_FAN.get(base);
                 ResourceLocation resLoc = texturedModel.create(base, blockModels.modelOutput);
-
                 blockModels.blockStateOutput.accept(
                         BlockModelGenerators.createSimpleBlock(quenched, resLoc)
                 );
-
-                ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(base.asItem());
-                addWithOverlay(quenched.asItem(), defaultModel, DOT_TEXTURE, itemModels);
-                return;
-            }
-
-            if (base instanceof SeaPickleBlock) {
-                addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
-
+            } else if (base instanceof SeaPickleBlock) {
                 blockModels.blockStateOutput.accept(
                         MultiVariantGenerator.multiVariant(quenched)
                                 .with(PropertyDispatch.property(SeaPickleBlock.PICKLES)
@@ -226,27 +214,22 @@ public class MotrModelProvider extends ModelProvider {
                                                 ResourceLocation.withDefaultNamespace("block/four_sea_pickles"))))
                                 )
                 );
-                return;
-            }
-
-            if (base instanceof KelpBlock || base instanceof KelpPlantBlock || base instanceof SeagrassBlock
-                    || base == Blocks.SUGAR_CANE) {
-
+            } else {
                 ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(base);
                 blockModels.blockStateOutput.accept(
                         BlockModelGenerators.createSimpleBlock(quenched, vanillaModel)
                 );
-
-                addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
-                return;
             }
 
-            addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
-
-            ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(base);
-            blockModels.blockStateOutput.accept(
-                    BlockModelGenerators.createSimpleBlock(quenched, vanillaModel)
-            );
+            if (base == Blocks.FARMLAND || base == Blocks.TUBE_CORAL_BLOCK || base == Blocks.BRAIN_CORAL_BLOCK
+                    || base == Blocks.BUBBLE_CORAL_BLOCK || base == Blocks.FIRE_CORAL_BLOCK
+                    || base == Blocks.HORN_CORAL_BLOCK) {
+                ResourceLocation itemModel = ModelLocationUtils.getModelLocation(base);
+                addWithOverlay(quenched.asItem(), itemModel, DOT_TEXTURE, itemModels);
+            } else {
+                ResourceLocation itemModel = ModelLocationUtils.getModelLocation(base.asItem());
+                addWithOverlay(quenched.asItem(), itemModel, DOT_TEXTURE, itemModels);
+            }
         });
 
     }
