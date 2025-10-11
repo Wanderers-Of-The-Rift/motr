@@ -111,28 +111,44 @@ public class MotrModelProvider extends ModelProvider {
         });
 
         MotrSlabs.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
-            {
-                String side = id;
-                String top = id;
-                String bottom = id;
-                switch (id) {
-                    case "bone_block" -> {
-                        side = "bone_block_side";
-                        top = "bone_block_top";
-                        bottom = "bone_block_top";
-                    }
-                    case "muddy_mangrove_roots" -> {
-                        side = "muddy_mangrove_roots_side";
-                        top = "muddy_mangrove_roots_top";
-                        bottom = "muddy_mangrove_roots_top";
-                    }
-                    case "podzol", "mycelium", "dirt_path" -> {
-                        side = id + "_side";
-                        top = id + "_top";
-                        bottom = "dirt";
-                    }
+            String side = id;
+            String top = id;
+            String bottom = id;
+
+            switch (id) {
+                case "bone_block" -> {
+                    side = "bone_block_side";
+                    top = "bone_block_top";
+                    bottom = "bone_block_top";
                 }
-                registerDirectionalSlabModel(blockModels, slabInfo.slab().get(), side, top, bottom);
+                case "muddy_mangrove_roots" -> {
+                    side = "muddy_mangrove_roots_side";
+                    top = "muddy_mangrove_roots_top";
+                    bottom = "muddy_mangrove_roots_top";
+                }
+                case "podzol" -> {
+                    side = "podzol_side";
+                    top = "podzol_top";
+                    bottom = "dirt";
+                }
+                case "mycelium" -> {
+                    side = "mycelium_side";
+                    top = "mycelium_top";
+                    bottom = "dirt";
+                }
+                case "dirt_path" -> {
+                    side = "dirt_path_side";
+                    top = "dirt_path_top";
+                    bottom = "dirt";
+                }
+            }
+
+            Block slab = slabInfo.slab().get();
+
+            if ("dirt_path".equals(id)) {
+                registerDirectionalPathSlabModel(blockModels, slab, side, top, bottom);
+            } else {
+                registerDirectionalSlabModel(blockModels, slab, side, top, bottom);
             }
         });
 
@@ -336,21 +352,77 @@ public class MotrModelProvider extends ModelProvider {
             String sideTex,
             String topTex,
             String bottomTex) {
+
         TextureMapping mapping = new TextureMapping()
                 .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + sideTex))
                 .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + topTex))
                 .put(TextureSlot.BOTTOM, ResourceLocation.withDefaultNamespace("block/" + bottomTex));
 
-        ResourceLocation bottom = ModelTemplates.SLAB_BOTTOM.create(slab, mapping, blockModels.modelOutput);
+        ResourceLocation bottom = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/grass_slab_bottom"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .create(slab, mapping, blockModels.modelOutput);
+
         ResourceLocation top = ModelTemplates.SLAB_TOP.createWithSuffix(slab, "_top", mapping, blockModels.modelOutput);
+
         ResourceLocation cube = ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(slab, "_double", mapping,
                 blockModels.modelOutput);
 
-        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(slab)
-                .with(PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
-                        .select(SlabType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, bottom))
-                        .select(SlabType.TOP, Variant.variant().with(VariantProperties.MODEL, top))
-                        .select(SlabType.DOUBLE, Variant.variant().with(VariantProperties.MODEL, cube))));
+        blockModels.blockStateOutput.accept(
+                MultiVariantGenerator.multiVariant(slab)
+                        .with(PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
+                                .select(SlabType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, bottom))
+                                .select(SlabType.TOP, Variant.variant().with(VariantProperties.MODEL, top))
+                                .select(SlabType.DOUBLE, Variant.variant().with(VariantProperties.MODEL, cube)))
+        );
+    }
+
+    private void registerDirectionalPathSlabModel(
+            BlockModelGenerators blockModels,
+            Block slab,
+            String sideTex,
+            String topTex,
+            String bottomTex) {
+
+        TextureMapping mapping = new TextureMapping()
+                .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + sideTex))
+                .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + topTex))
+                .put(TextureSlot.BOTTOM, ResourceLocation.withDefaultNamespace("block/" + bottomTex));
+
+        ResourceLocation bottom = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/path_slab_bottom"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .create(slab, mapping, blockModels.modelOutput);
+
+        ResourceLocation top = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/path_slab_top"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .createWithSuffix(slab, "_top", mapping, blockModels.modelOutput);
+
+        ResourceLocation cube = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/path_slab_double"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .createWithSuffix(slab, "_double", mapping, blockModels.modelOutput);
+
+        blockModels.blockStateOutput.accept(
+                MultiVariantGenerator.multiVariant(slab)
+                        .with(PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
+                                .select(SlabType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, bottom))
+                                .select(SlabType.TOP, Variant.variant().with(VariantProperties.MODEL, top))
+                                .select(SlabType.DOUBLE, Variant.variant().with(VariantProperties.MODEL, cube)))
+        );
     }
 
     private void registerGlassSlabModel(BlockModelGenerators blockModels, Block slab, String textureId) {
