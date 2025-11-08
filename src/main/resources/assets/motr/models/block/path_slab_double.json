@@ -1,0 +1,23 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "side": "#side",
+    "top": "#top",
+    "bottom": "#bottom",
+    "particle": "#side"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to":   [16, 15, 16],
+      "faces": {
+        "up":    {"texture": "#top"},
+        "down":  {"texture": "#bottom"},
+        "north": {"texture": "#side"},
+        "south": {"texture": "#side"},
+        "west":  {"texture": "#side"},
+        "east":  {"texture": "#side"}
+      }
+    }
+  ]
+}

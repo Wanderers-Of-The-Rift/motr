@@ -145,12 +145,75 @@ public class MotrQuenched {
         }
 
         @Override
-        protected boolean canGrowInto(@NotNull BlockState state) {
+        protected void randomTick(
+                @NotNull BlockState s,
+                @NotNull ServerLevel l,
+                @NotNull BlockPos p,
+                @NotNull RandomSource r) {
+        }
+
+        @Override
+        protected boolean isRandomlyTicking(@NotNull BlockState s) {
+            return false;
+        }
+
+        @Override
+        public void performBonemeal(
+                @NotNull ServerLevel l,
+                @NotNull RandomSource r,
+                @NotNull BlockPos p,
+                @NotNull BlockState s) {
+        }
+
+        @Override
+        public void onPlace(
+                @NotNull BlockState state,
+                @NotNull net.minecraft.world.level.Level level,
+                @NotNull BlockPos pos,
+                @NotNull BlockState oldState,
+                boolean isMoving) {
+            super.onPlace(state, level, pos, oldState, isMoving);
+
+            if (isQuenchedKelp(level.getBlockState(pos.above()))) {
+                level.setBlock(pos, MotrQuenched.QUENCHED_KELP_PLANT.block().get().defaultBlockState(), 3);
+                return;
+            }
+
+            BlockPos below = pos.below();
+            if (isQuenchedKelpHead(level.getBlockState(below))) {
+                level.setBlock(below, MotrQuenched.QUENCHED_KELP_PLANT.block().get().defaultBlockState(), 3);
+            }
+        }
+
+        @Override
+        public void onNeighborChange(
+                @NotNull BlockState state,
+                @NotNull LevelReader level,
+                @NotNull BlockPos pos,
+                @NotNull BlockPos neighbor) {
+            if (level instanceof net.minecraft.world.level.Level worldLevel) {
+                if (isQuenchedKelp(worldLevel.getBlockState(pos.above()))) {
+                    worldLevel.setBlock(pos, MotrQuenched.QUENCHED_KELP_PLANT.block().get().defaultBlockState(), 3);
+                }
+            }
+        }
+
+        private static boolean isQuenchedKelp(BlockState s) {
+            Block b = s.getBlock();
+            return b == MotrQuenched.QUENCHED_KELP.block().get() || b == MotrQuenched.QUENCHED_KELP_PLANT.block().get();
+        }
+
+        private static boolean isQuenchedKelpHead(BlockState s) {
+            return s.getBlock() == MotrQuenched.QUENCHED_KELP.block().get();
+        }
+
+        @Override
+        protected boolean canGrowInto(@NotNull BlockState s) {
             return true;
         }
 
         @Override
-        protected boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos) {
+        protected boolean canSurvive(@NotNull BlockState s, @NotNull LevelReader l, @NotNull BlockPos p) {
             return true;
         }
 
@@ -160,22 +223,22 @@ public class MotrQuenched {
         }
 
         @Override
-        public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+        public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext c) {
             return this.defaultBlockState();
         }
 
         @Override
         public boolean canBeHydrated(
-                @NotNull BlockState state,
-                @NotNull BlockGetter getter,
-                @NotNull BlockPos pos,
-                @NotNull FluidState fluid,
-                @NotNull BlockPos fluidPos) {
+                @NotNull BlockState s,
+                @NotNull BlockGetter g,
+                @NotNull BlockPos p,
+                @NotNull FluidState f,
+                @NotNull BlockPos fp) {
             return true;
         }
 
         @Override
-        public @NotNull FluidState getFluidState(@NotNull BlockState state) {
+        public @NotNull FluidState getFluidState(@NotNull BlockState s) {
             return Fluids.EMPTY.defaultFluidState();
         }
     }
@@ -187,7 +250,38 @@ public class MotrQuenched {
         }
 
         @Override
-        protected boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos) {
+        protected void randomTick(
+                @NotNull BlockState s,
+                @NotNull ServerLevel l,
+                @NotNull BlockPos p,
+                @NotNull RandomSource r) {
+        }
+
+        @Override
+        protected boolean isRandomlyTicking(@NotNull BlockState s) {
+            return false;
+        }
+
+        @Override
+        public void onNeighborChange(
+                @NotNull BlockState state,
+                @NotNull LevelReader level,
+                @NotNull BlockPos pos,
+                @NotNull BlockPos neighbor) {
+            if (level instanceof net.minecraft.world.level.Level worldLevel) {
+                if (!isQuenchedKelp(worldLevel.getBlockState(pos.above()))) {
+                    worldLevel.setBlock(pos, MotrQuenched.QUENCHED_KELP.block().get().defaultBlockState(), 3);
+                }
+            }
+        }
+
+        private static boolean isQuenchedKelp(BlockState s) {
+            Block b = s.getBlock();
+            return b == MotrQuenched.QUENCHED_KELP.block().get() || b == MotrQuenched.QUENCHED_KELP_PLANT.block().get();
+        }
+
+        @Override
+        protected boolean canSurvive(@NotNull BlockState s, @NotNull LevelReader l, @NotNull BlockPos p) {
             return true;
         }
 
@@ -197,22 +291,22 @@ public class MotrQuenched {
         }
 
         @Override
-        public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+        public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext c) {
             return this.defaultBlockState();
         }
 
         @Override
         public boolean canBeHydrated(
-                @NotNull BlockState state,
-                @NotNull BlockGetter getter,
-                @NotNull BlockPos pos,
-                @NotNull FluidState fluid,
-                @NotNull BlockPos fluidPos) {
+                @NotNull BlockState s,
+                @NotNull BlockGetter g,
+                @NotNull BlockPos p,
+                @NotNull FluidState f,
+                @NotNull BlockPos fp) {
             return true;
         }
 
         @Override
-        public @NotNull FluidState getFluidState(@NotNull BlockState state) {
+        public @NotNull FluidState getFluidState(@NotNull BlockState s) {
             return Fluids.EMPTY.defaultFluidState();
         }
     }
@@ -293,6 +387,19 @@ public class MotrQuenched {
         }
 
         @Override
+        protected void randomTick(
+                @NotNull BlockState state,
+                @NotNull ServerLevel level,
+                @NotNull BlockPos pos,
+                @NotNull RandomSource random) {
+        }
+
+        @Override
+        protected boolean isRandomlyTicking(@NotNull BlockState state) {
+            return false;
+        }
+
+        @Override
         protected boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos) {
             return true;
         }
@@ -301,9 +408,12 @@ public class MotrQuenched {
     public static final QuenchedBlockInfo QUENCHED_KELP = registerQuenchedBlock("quenched_kelp", Blocks.KELP,
             () -> new QuenchedKelpBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.KELP).setId(blockId("quenched_kelp"))));
-    public static final QuenchedBlockInfo QUENCHED_KELP_PLANT = registerQuenchedBlock("quenched_kelp_plant",
-            Blocks.KELP_PLANT, () -> new QuenchedKelpPlantBlock(
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.KELP_PLANT).setId(blockId("quenched_kelp_plant"))));
+
+    public static final QuenchedBlockInfo QUENCHED_KELP_PLANT = registerQuenchedDevBlock(
+            "quenched_kelp_plant", Blocks.KELP_PLANT, () -> new QuenchedKelpPlantBlock(
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.KELP_PLANT).setId(blockId("quenched_kelp_plant"))
+            )
+    );
     public static final QuenchedBlockInfo QUENCHED_SEAGRASS = registerQuenchedBlock("quenched_seagrass",
             Blocks.SEAGRASS, () -> new QuenchedSeagrassBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.SEAGRASS).setId(blockId("quenched_seagrass"))));
@@ -365,6 +475,22 @@ public class MotrQuenched {
                     BlockBehaviour.Properties.ofFullCopy(Blocks.HORN_CORAL_FAN)
                             .setId(blockId("quenched_horn_coral_fan"))));
 
+    public static final QuenchedBlockInfo QUENCHED_TUBE_CORAL = registerQuenchedBlock("quenched_tube_coral",
+            Blocks.TUBE_CORAL, () -> new QuenchedCoralFanBlock(Blocks.TUBE_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.TUBE_CORAL).setId(blockId("quenched_tube_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_BRAIN_CORAL = registerQuenchedBlock("quenched_brain_coral",
+            Blocks.BRAIN_CORAL, () -> new QuenchedCoralFanBlock(Blocks.BRAIN_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BRAIN_CORAL).setId(blockId("quenched_brain_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_BUBBLE_CORAL = registerQuenchedBlock("quenched_bubble_coral",
+            Blocks.BUBBLE_CORAL, () -> new QuenchedCoralFanBlock(Blocks.BUBBLE_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.BUBBLE_CORAL).setId(blockId("quenched_bubble_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_FIRE_CORAL = registerQuenchedBlock("quenched_fire_coral",
+            Blocks.FIRE_CORAL, () -> new QuenchedCoralFanBlock(Blocks.FIRE_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE_CORAL).setId(blockId("quenched_fire_coral"))));
+    public static final QuenchedBlockInfo QUENCHED_HORN_CORAL = registerQuenchedBlock("quenched_horn_coral",
+            Blocks.HORN_CORAL, () -> new QuenchedCoralFanBlock(Blocks.HORN_CORAL,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.HORN_CORAL).setId(blockId("quenched_horn_coral"))));
+
     public static final QuenchedBlockInfo QUENCHED_FARMLAND = registerQuenchedBlock("quenched_farmland",
             Blocks.FARMLAND, () -> new QuenchedFarmlandBlock(
                     BlockBehaviour.Properties.ofFullCopy(Blocks.FARMLAND).setId(blockId("quenched_farmland"))));
@@ -375,12 +501,19 @@ public class MotrQuenched {
     public static final Map<String, QuenchedBlockInfo> REGISTERED_QUENCHED_BLOCKS = Map.ofEntries(
             Map.entry("kelp", QUENCHED_KELP), Map.entry("seagrass", QUENCHED_SEAGRASS),
             Map.entry("kelp_plant", QUENCHED_KELP_PLANT), Map.entry("sea_pickle", QUENCHED_SEA_PICKLE),
-            Map.entry("tube_coral", QUENCHED_TUBE_CORAL_BLOCK), Map.entry("brain_coral", QUENCHED_BRAIN_CORAL_BLOCK),
-            Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL_BLOCK), Map.entry("fire_coral", QUENCHED_FIRE_CORAL_BLOCK),
-            Map.entry("horn_coral", QUENCHED_HORN_CORAL_BLOCK), Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
+            Map.entry("tube_coral_block", QUENCHED_TUBE_CORAL_BLOCK),
+            Map.entry("brain_coral_block", QUENCHED_BRAIN_CORAL_BLOCK),
+            Map.entry("bubble_coral_block", QUENCHED_BUBBLE_CORAL_BLOCK),
+            Map.entry("fire_coral_block", QUENCHED_FIRE_CORAL_BLOCK),
+            Map.entry("horn_coral_block", QUENCHED_HORN_CORAL_BLOCK),
+            Map.entry("tube_coral_fan", QUENCHED_TUBE_CORAL_FAN),
             Map.entry("brain_coral_fan", QUENCHED_BRAIN_CORAL_FAN),
             Map.entry("bubble_coral_fan", QUENCHED_BUBBLE_CORAL_FAN),
             Map.entry("fire_coral_fan", QUENCHED_FIRE_CORAL_FAN), Map.entry("horn_coral_fan", QUENCHED_HORN_CORAL_FAN),
+            Map.entry("tube_coral", QUENCHED_TUBE_CORAL), Map.entry("brain_coral", QUENCHED_BRAIN_CORAL),
+            Map.entry("bubble_coral", QUENCHED_BUBBLE_CORAL), Map.entry("fire_coral", QUENCHED_FIRE_CORAL),
+            Map.entry("horn_coral", QUENCHED_HORN_CORAL),
+
             Map.entry("farmland", QUENCHED_FARMLAND), Map.entry("sugar_cane", QUENCHED_SUGAR_CANE)
     );
 
@@ -395,6 +528,18 @@ public class MotrQuenched {
 
         return new MotrQuenched.QuenchedBlockInfo(block, baseBlock);
 
+    }
+
+    private static MotrQuenched.QuenchedBlockInfo registerQuenchedDevBlock(
+            String id,
+            Block baseBlock,
+            Supplier<Block> blockSupplier) {
+
+        DeferredBlock<Block> block = BLOCKS.register(id, blockSupplier);
+
+        MotrItems.registerSimpleDevBlockItem(id, block);
+
+        return new MotrQuenched.QuenchedBlockInfo(block, baseBlock);
     }
 
     public static ResourceKey<Block> blockId(String name) {

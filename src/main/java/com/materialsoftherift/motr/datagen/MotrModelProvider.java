@@ -30,10 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CoralFanBlock;
-import net.minecraft.world.level.block.KelpBlock;
-import net.minecraft.world.level.block.KelpPlantBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
-import net.minecraft.world.level.block.SeagrassBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -114,28 +111,44 @@ public class MotrModelProvider extends ModelProvider {
         });
 
         MotrSlabs.REGISTERED_DIRECTIONAL_SLABS.forEach((id, slabInfo) -> {
-            {
-                String side = id;
-                String top = id;
-                String bottom = id;
-                switch (id) {
-                    case "bone_block" -> {
-                        side = "bone_block_side";
-                        top = "bone_block_top";
-                        bottom = "bone_block_top";
-                    }
-                    case "muddy_mangrove_roots" -> {
-                        side = "muddy_mangrove_roots_side";
-                        top = "muddy_mangrove_roots_top";
-                        bottom = "muddy_mangrove_roots_top";
-                    }
-                    case "podzol", "mycelium", "dirt_path" -> {
-                        side = id + "_side";
-                        top = id + "_top";
-                        bottom = "dirt";
-                    }
+            String side = id;
+            String top = id;
+            String bottom = id;
+
+            switch (id) {
+                case "bone_block" -> {
+                    side = "bone_block_side";
+                    top = "bone_block_top";
+                    bottom = "bone_block_top";
                 }
-                registerDirectionalSlabModel(blockModels, slabInfo.slab().get(), side, top, bottom);
+                case "muddy_mangrove_roots" -> {
+                    side = "muddy_mangrove_roots_side";
+                    top = "muddy_mangrove_roots_top";
+                    bottom = "muddy_mangrove_roots_top";
+                }
+                case "podzol" -> {
+                    side = "podzol_side";
+                    top = "podzol_top";
+                    bottom = "dirt";
+                }
+                case "mycelium" -> {
+                    side = "mycelium_side";
+                    top = "mycelium_top";
+                    bottom = "dirt";
+                }
+                case "dirt_path" -> {
+                    side = "dirt_path_side";
+                    top = "dirt_path_top";
+                    bottom = "dirt";
+                }
+            }
+
+            Block slab = slabInfo.slab().get();
+
+            if ("dirt_path".equals(id)) {
+                registerDirectionalPathSlabModel(blockModels, slab, side, top, bottom);
+            } else {
+                registerDirectionalSlabModel(blockModels, slab, side, top, bottom);
             }
         });
 
@@ -200,19 +213,10 @@ public class MotrModelProvider extends ModelProvider {
             if (base instanceof CoralFanBlock) {
                 TexturedModel texturedModel = TexturedModel.CORAL_FAN.get(base);
                 ResourceLocation resLoc = texturedModel.create(base, blockModels.modelOutput);
-
                 blockModels.blockStateOutput.accept(
                         BlockModelGenerators.createSimpleBlock(quenched, resLoc)
                 );
-
-                ResourceLocation defaultModel = ModelLocationUtils.getModelLocation(base.asItem());
-                addWithOverlay(quenched.asItem(), defaultModel, DOT_TEXTURE, itemModels);
-                return;
-            }
-
-            if (base instanceof SeaPickleBlock) {
-                addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
-
+            } else if (base instanceof SeaPickleBlock) {
                 blockModels.blockStateOutput.accept(
                         MultiVariantGenerator.multiVariant(quenched)
                                 .with(PropertyDispatch.property(SeaPickleBlock.PICKLES)
@@ -226,27 +230,22 @@ public class MotrModelProvider extends ModelProvider {
                                                 ResourceLocation.withDefaultNamespace("block/four_sea_pickles"))))
                                 )
                 );
-                return;
-            }
-
-            if (base instanceof KelpBlock || base instanceof KelpPlantBlock || base instanceof SeagrassBlock
-                    || base == Blocks.SUGAR_CANE) {
-
+            } else {
                 ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(base);
                 blockModels.blockStateOutput.accept(
                         BlockModelGenerators.createSimpleBlock(quenched, vanillaModel)
                 );
-
-                addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
-                return;
             }
 
-            addWithOverlay(quenched.asItem(), ModelLocationUtils.getModelLocation(base), DOT_TEXTURE, itemModels);
-
-            ResourceLocation vanillaModel = ModelLocationUtils.getModelLocation(base);
-            blockModels.blockStateOutput.accept(
-                    BlockModelGenerators.createSimpleBlock(quenched, vanillaModel)
-            );
+            if (base == Blocks.FARMLAND || base == Blocks.TUBE_CORAL_BLOCK || base == Blocks.BRAIN_CORAL_BLOCK
+                    || base == Blocks.BUBBLE_CORAL_BLOCK || base == Blocks.FIRE_CORAL_BLOCK
+                    || base == Blocks.HORN_CORAL_BLOCK) {
+                ResourceLocation itemModel = ModelLocationUtils.getModelLocation(base);
+                addWithOverlay(quenched.asItem(), itemModel, DOT_TEXTURE, itemModels);
+            } else {
+                ResourceLocation itemModel = ModelLocationUtils.getModelLocation(base.asItem());
+                addWithOverlay(quenched.asItem(), itemModel, DOT_TEXTURE, itemModels);
+            }
         });
 
     }
@@ -353,21 +352,77 @@ public class MotrModelProvider extends ModelProvider {
             String sideTex,
             String topTex,
             String bottomTex) {
+
         TextureMapping mapping = new TextureMapping()
                 .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + sideTex))
                 .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + topTex))
                 .put(TextureSlot.BOTTOM, ResourceLocation.withDefaultNamespace("block/" + bottomTex));
 
-        ResourceLocation bottom = ModelTemplates.SLAB_BOTTOM.create(slab, mapping, blockModels.modelOutput);
+        ResourceLocation bottom = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/grass_slab_bottom"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .create(slab, mapping, blockModels.modelOutput);
+
         ResourceLocation top = ModelTemplates.SLAB_TOP.createWithSuffix(slab, "_top", mapping, blockModels.modelOutput);
+
         ResourceLocation cube = ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(slab, "_double", mapping,
                 blockModels.modelOutput);
 
-        blockModels.blockStateOutput.accept(MultiVariantGenerator.multiVariant(slab)
-                .with(PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
-                        .select(SlabType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, bottom))
-                        .select(SlabType.TOP, Variant.variant().with(VariantProperties.MODEL, top))
-                        .select(SlabType.DOUBLE, Variant.variant().with(VariantProperties.MODEL, cube))));
+        blockModels.blockStateOutput.accept(
+                MultiVariantGenerator.multiVariant(slab)
+                        .with(PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
+                                .select(SlabType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, bottom))
+                                .select(SlabType.TOP, Variant.variant().with(VariantProperties.MODEL, top))
+                                .select(SlabType.DOUBLE, Variant.variant().with(VariantProperties.MODEL, cube)))
+        );
+    }
+
+    private void registerDirectionalPathSlabModel(
+            BlockModelGenerators blockModels,
+            Block slab,
+            String sideTex,
+            String topTex,
+            String bottomTex) {
+
+        TextureMapping mapping = new TextureMapping()
+                .put(TextureSlot.SIDE, ResourceLocation.withDefaultNamespace("block/" + sideTex))
+                .put(TextureSlot.TOP, ResourceLocation.withDefaultNamespace("block/" + topTex))
+                .put(TextureSlot.BOTTOM, ResourceLocation.withDefaultNamespace("block/" + bottomTex));
+
+        ResourceLocation bottom = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/path_slab_bottom"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .create(slab, mapping, blockModels.modelOutput);
+
+        ResourceLocation top = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/path_slab_top"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .createWithSuffix(slab, "_top", mapping, blockModels.modelOutput);
+
+        ResourceLocation cube = ExtendedModelTemplateBuilder.builder()
+                .parent(MaterialsOfTheRift.id("block/path_slab_double"))
+                .requiredTextureSlot(TextureSlot.SIDE)
+                .requiredTextureSlot(TextureSlot.TOP)
+                .requiredTextureSlot(TextureSlot.BOTTOM)
+                .build()
+                .createWithSuffix(slab, "_double", mapping, blockModels.modelOutput);
+
+        blockModels.blockStateOutput.accept(
+                MultiVariantGenerator.multiVariant(slab)
+                        .with(PropertyDispatch.property(BlockStateProperties.SLAB_TYPE)
+                                .select(SlabType.BOTTOM, Variant.variant().with(VariantProperties.MODEL, bottom))
+                                .select(SlabType.TOP, Variant.variant().with(VariantProperties.MODEL, top))
+                                .select(SlabType.DOUBLE, Variant.variant().with(VariantProperties.MODEL, cube)))
+        );
     }
 
     private void registerGlassSlabModel(BlockModelGenerators blockModels, Block slab, String textureId) {

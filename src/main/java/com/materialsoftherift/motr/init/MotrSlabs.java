@@ -18,6 +18,7 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -28,7 +29,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -289,9 +293,8 @@ public class MotrSlabs {
             Map.entry("raw_iron_block", RAW_IRON_BLOCK_SLAB), Map.entry("raw_gold_block", RAW_GOLD_BLOCK_SLAB),
             Map.entry("pale_moss_block", PALE_MOSS_BLOCK_SLAB), Map.entry("packed_ice", PACKED_ICE_SLAB),
             Map.entry("nether_wart_block", NETHER_WART_BLOCK_SLAB), Map.entry("mud", MUD_SLAB),
-            Map.entry("moss_block", MOSS_BLOCK_SLAB), Map.entry("ice", ICE_SLAB),
-            Map.entry("gilded_blackstone", GILDED_BLACKSTONE_SLAB), Map.entry("dirt", DIRT_SLAB),
-            Map.entry("clay", CLAY_SLAB), Map.entry("coarse_dirt", COARSE_DIRT_SLAB),
+            Map.entry("moss_block", MOSS_BLOCK_SLAB), Map.entry("gilded_blackstone", GILDED_BLACKSTONE_SLAB),
+            Map.entry("dirt", DIRT_SLAB), Map.entry("clay", CLAY_SLAB), Map.entry("coarse_dirt", COARSE_DIRT_SLAB),
             Map.entry("blue_ice", BLUE_ICE_SLAB), Map.entry("resin_block", RESIN_BLOCK_SLAB),
             Map.entry("magma", MAGMA_SLAB)
 
@@ -321,7 +324,7 @@ public class MotrSlabs {
             Map.entry("blue_stained_glass", BLUE_STAINED_GLASS_SLAB),
             Map.entry("purple_stained_glass", PURPLE_STAINED_GLASS_SLAB),
             Map.entry("magenta_stained_glass", MAGENTA_STAINED_GLASS_SLAB),
-            Map.entry("pink_stained_glass", PINK_STAINED_GLASS_SLAB)
+            Map.entry("pink_stained_glass", PINK_STAINED_GLASS_SLAB), Map.entry("ice", ICE_SLAB)
     );
 
     public static final Map<String, SlabInfo> REGISTERED_DIRECTIONAL_SLABS = Map.ofEntries(
@@ -349,6 +352,10 @@ public class MotrSlabs {
         DeferredBlock<SlabBlock> slab = registerBlock(id, () -> {
             BlockBehaviour.Properties properties = BlockBehaviour.Properties.ofFullCopy(baseBlock).setId(blockId(id));
 
+            if (baseBlock == Blocks.DIRT_PATH) {
+                return new PathDirectionalSlabBlock(properties);
+            }
+
             if (baseBlock == Blocks.ICE || baseBlock == Blocks.PACKED_ICE || baseBlock == Blocks.BLUE_ICE) {
                 return new MotrSlabs.IceSlabBlock(properties.friction(0.98f));
             }
@@ -361,6 +368,37 @@ public class MotrSlabs {
         });
 
         return new SlabInfo(slab, baseBlock);
+    }
+
+    public static class PathDirectionalSlabBlock extends SlabBlock {
+
+        private static final VoxelShape BOTTOM_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 7.0, 16.0);
+        private static final VoxelShape TOP_SHAPE = Block.box(0.0, 8.0, 0.0, 16.0, 15.0, 16.0);
+        private static final VoxelShape DOUBLE_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 15.0, 16.0);
+
+        public PathDirectionalSlabBlock(Properties props) {
+            super(props);
+        }
+
+        @Override
+        public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+            SlabType type = state.getValue(TYPE);
+            return switch (type) {
+                case TOP -> TOP_SHAPE;
+                case DOUBLE -> DOUBLE_SHAPE;
+                case BOTTOM -> BOTTOM_SHAPE;
+            };
+        }
+
+        @Override
+        public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+            return getShape(state, level, pos, ctx);
+        }
+
+        @Override
+        public boolean useShapeForLightOcclusion(BlockState state) {
+            return true;
+        }
     }
 
     private static SlabInfo registerCopperSlabBlock(String id, Block baseBlock) {
